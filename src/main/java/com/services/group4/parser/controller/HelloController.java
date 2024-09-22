@@ -1,4 +1,4 @@
-package com.services.group4.parser;
+package com.services.group4.parser.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
