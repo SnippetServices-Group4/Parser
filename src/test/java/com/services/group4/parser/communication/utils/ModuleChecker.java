@@ -1,4 +1,4 @@
-package com.services.group4.parser.utils;
+package com.services.group4.parser.communication.utils;
 
 import org.springframework.web.client.RestTemplate;
 

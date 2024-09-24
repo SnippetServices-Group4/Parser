@@ -1,4 +1,4 @@
-package com.services.group4.parser;
+package com.services.group4.parser.communication;
 
 import com.services.group4.parser.model.CommunicationMessage;
 import org.junit.jupiter.api.Test;

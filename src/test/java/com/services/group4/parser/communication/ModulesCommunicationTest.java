@@ -1,4 +1,4 @@
-package com.services.group4.parser;
+package com.services.group4.parser.communication;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ModulesCommunicationTest {
     this.mockMvc.perform(get("/test/permission/communication"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.source").value("Parser"))
-      .andExpect(jsonPath("$.message").value("Communication between Parser and Permission works!"));
+      .andExpect(jsonPath("$.message").value("Communication from Permission to Parser works!"));
   }
 
   @Test
@@ -29,6 +29,6 @@ public class ModulesCommunicationTest {
     this.mockMvc.perform(get("/test/snippet/communication"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.source").value("Parser"))
-      .andExpect(jsonPath("$.message").value("Communication between Parser and Snippet works!"));
+      .andExpect(jsonPath("$.message").value("Communication from Snippet to Parser works!"));
   }
 }
