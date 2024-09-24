@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
   @GetMapping("/permission/communication")
   public CommunicationMessage testPermissionCommunication() {
-    return new CommunicationMessage("Parser", "Communication between Parser and Permission works!");
+    return new CommunicationMessage("Parser", "Communication from Permission to Parser works!");
   }
 
   @GetMapping("/snippet/communication")
   public CommunicationMessage testSnippetCommunication() {
-    return new CommunicationMessage("Parser", "Communication between Parser and Snippet works!");
+    return new CommunicationMessage("Parser", "Communication from Snippet to Parser works!");
   }
 }

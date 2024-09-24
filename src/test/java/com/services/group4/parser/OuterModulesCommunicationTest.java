@@ -29,12 +29,23 @@ public class OuterModulesCommunicationTest {
 
   @Test
   @EnabledIf("com.services.group4.parser.utils.ModuleChecker#isSnippetModuleRunning")
-  void testParserSnippetCommunication() {
+  void fromParserToSnippetCommunicationTest() {
     System.out.println("ATTENTION: SNIPPET MODULE MUST BE RUNNING FOR THIS TEST TO PASS!");
     String url = "http://localhost:8080/test/parser/communication";
     CommunicationMessage response = restTemplate.getForObject(url, CommunicationMessage.class);
     assertNotNull(response);
     assertEquals("Snippet", response.source());
-    assertEquals("Communication between Snippet and Parser works!", response.message());
+    assertEquals("Communication from Parser to Snippet works!", response.message());
+  }
+
+  @Test
+  @EnabledIf("com.services.group4.parser.utils.ModuleChecker#isPermissionModuleRunning")
+  void fromParserToPermissionCommunicationTest() {
+    System.out.println("ATTENTION: PERMISSION MODULE MUST BE RUNNING FOR THIS TEST TO PASS!");
+    String url = "http://localhost:8081/test/parser/communication";
+    CommunicationMessage response = restTemplate.getForObject(url, CommunicationMessage.class);
+    assertNotNull(response);
+    assertEquals("Permission", response.source());
+    assertEquals("Communication from Parser to Permission works!", response.message());
   }
 }

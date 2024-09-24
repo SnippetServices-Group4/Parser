@@ -12,4 +12,14 @@ public class ModuleChecker {
       return false;
     }
   }
+
+  public static boolean isPermissionModuleRunning() {
+    try {
+      RestTemplate restTemplate = new RestTemplate();
+      restTemplate.getForObject("http://localhost:8081/test/parser/communication", String.class);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
 }
