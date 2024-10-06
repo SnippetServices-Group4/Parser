@@ -34,4 +34,4 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/snippetservices-group4/snippets:latest
+            ghcr.io/snippetservices-group4/parsers:latest
