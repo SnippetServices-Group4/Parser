@@ -1,19 +1,15 @@
 plugins {
-	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	//  For plugins to work, put necessary credentials in the settings.gradle file.
 	id 'com.services.group4.checkstyle' version '1.0.0'
 	id 'com.services.group4.spotless' version '1.0.0'
+	id 'com.services.group4.jacoco' version '1.0.2'
+	id 'com.services.group4.java' version '1.0.3'
 }
 
 group = 'com.services.group4'
 version = '0.0.1-SNAPSHOT'
-
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
 
 repositories {
 	mavenCentral()
