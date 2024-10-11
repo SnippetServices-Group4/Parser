@@ -27,7 +27,7 @@ public class OuterModulesCommunicationTest {
   @Autowired
   private RestTemplate restTemplate;
 
-  private static final String MODULE_CHECKER_PATH = "com.services.group4.permission.communication.utils.ModuleChecker";
+  private static final String MODULE_CHECKER_PATH = "com.services.group4.parser.communication.utils.ModuleChecker";
 
   @Test
   @EnabledIf(MODULE_CHECKER_PATH + "#isSnippetModuleRunning")
