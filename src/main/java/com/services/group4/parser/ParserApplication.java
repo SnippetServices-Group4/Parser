@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})public class ParserApplication {
 
 	public static void main(String[] args) {
+		DotenvConfig.loadEnv();
 		SpringApplication.run(ParserApplication.class, args);
 	}
 

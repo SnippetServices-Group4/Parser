@@ -2,9 +2,12 @@ version: '3.8'
 
 services:
   application:
-    container_name: "parser-app"
+    container_name: ${SPRING_APPLICATION_NAME}
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8082:8080"
+      - ${SPRING_PORT}:${SPRING_PORT}
+    environment:
+      SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
+      SPRING_PORT: ${SPRING_PORT}
