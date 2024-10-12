@@ -1,6 +1,11 @@
 package com.services.group4.parser.communication;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import com.services.group4.parser.DotenvConfig;
 import com.services.group4.parser.model.CommunicationMessage;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +15,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 public class OuterModulesCommunicationTest {
+  @BeforeAll
+  public static void setup() {
+    DotenvConfig.loadEnv();
+  }
+
   @Configuration
   static class TestConfig {
     @Bean
@@ -24,10 +31,10 @@ public class OuterModulesCommunicationTest {
     }
   }
 
-  @Autowired
-  private RestTemplate restTemplate;
+  @Autowired private RestTemplate restTemplate;
 
-  private static final String MODULE_CHECKER_PATH = "com.services.group4.permission.communication.utils.ModuleChecker";
+  private static final String MODULE_CHECKER_PATH =
+      "com.services.group4.parser.communication.utils.ModuleChecker";
 
   @Test
   @EnabledIf(MODULE_CHECKER_PATH + "#isSnippetModuleRunning")
