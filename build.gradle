@@ -11,6 +11,26 @@ repositories {
 	mavenCentral()
 }
 
+jacocoTestReport {
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'**/DotenvConfig.class'
+			])
+		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'**/DotenvConfig.class'
+			])
+		}))
+	}
+}
+
 ext {
 	set('springCloudVersion', "2023.0.3")
 }
