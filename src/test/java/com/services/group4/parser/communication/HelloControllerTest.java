@@ -1,7 +1,8 @@
 package com.services.group4.parser.communication;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.services.group4.parser.DotenvConfig;
@@ -14,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ModulesCommunicationTest {
+public class HelloControllerTest {
   @BeforeAll
   public static void setup() {
     DotenvConfig.loadEnv();
@@ -23,20 +24,26 @@ public class ModulesCommunicationTest {
   @Autowired private MockMvc mockMvc;
 
   @Test
-  void testOwnPermissionCommunication() throws Exception {
-    this.mockMvc
-        .perform(get("/test/permission/communication"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.source").value("Parser"))
-        .andExpect(jsonPath("$.message").value("Communication from Permission to Parser works!"));
+  public void testSayHello() {
+    try {
+      mockMvc
+          .perform(get("/api/hello"))
+          .andExpect(status().isOk())
+          .andExpect(content().string("Hello, World!"));
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Test
-  void testOwnSnippetCommunication() throws Exception {
-    this.mockMvc
-        .perform(get("/test/snippet/communication"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.source").value("Parser"))
-        .andExpect(jsonPath("$.message").value("Communication from Snippet to Parser works!"));
+  public void testEcho() {
+    try {
+      mockMvc
+          .perform(post("/api/echo").content("Hello, World!"))
+          .andExpect(status().isOk())
+          .andExpect(content().string("Hello, World!"));
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }

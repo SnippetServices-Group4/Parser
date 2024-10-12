@@ -1,20 +1,34 @@
 plugins {
-	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'com.services.group4.common-conventions' version '1.0.6'
 }
 
 group = 'com.services.group4'
 version = '0.0.1-SNAPSHOT'
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+repositories {
+	mavenCentral()
+}
+
+jacocoTestReport {
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'**/DotenvConfig.class'
+			])
+		}))
 	}
 }
 
-repositories {
-	mavenCentral()
+jacocoTestCoverageVerification {
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'**/DotenvConfig.class'
+			])
+		}))
+	}
 }
 
 ext {

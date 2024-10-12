@@ -6,13 +6,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class ParserApplicationTests {
-	@BeforeAll
-	public static void setup() {
-		DotenvConfig.loadEnv();
-	}
+  @BeforeAll
+  public static void setup() {
+    DotenvConfig.loadEnv();
+  }
 
-	@Test
-	void contextLoads() {
-	}
-
+  @Test
+  void contextLoads() {}
 }
