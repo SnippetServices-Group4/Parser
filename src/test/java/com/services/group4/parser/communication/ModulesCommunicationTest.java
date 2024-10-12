@@ -1,5 +1,7 @@
 package com.services.group4.parser.communication;
 
+import com.services.group4.parser.DotenvConfig;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,6 +15,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ModulesCommunicationTest {
+  @BeforeAll
+  public static void setup() {
+    DotenvConfig.loadEnv();
+  }
+
   @Autowired
   private MockMvc mockMvc;
 
