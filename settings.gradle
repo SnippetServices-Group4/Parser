@@ -4,10 +4,8 @@ pluginManagement {
             name = 'GitHubPackages'
             url = uri('https://maven.pkg.github.com/SnippetServices-Group4/Plugins')
             credentials {
-                // Use the GitHub username and token to authenticate and import plugins.
-                // Reestablish once the plugins are imported.
-                username = System.getenv('USERNAME') ?: ""
-                password = System.getenv('TOKEN') ?: ""
+                username = System.getenv('GRAD_USER') ?: (settings.extensions.extraProperties.get('gpr.user') ?:"")
+                password = System.getenv('GRAD_PASS') ?: (settings.extensions.extraProperties.get('gpr.token') ?:"")
             }
         }
         gradlePluginPortal()
