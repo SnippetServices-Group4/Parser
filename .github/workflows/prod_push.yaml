@@ -1,14 +1,13 @@
-name: "Continuous Deployment"
+name: "Continuous Deployment - prod"
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    types: [closed]
     branches:
       - main
 
 jobs:
   push_to_registry:
+    if: github.event.pull_request.merged == true
     name: Push Docker image to GitHub Packages
     runs-on: ubuntu-latest
     steps:
@@ -35,3 +34,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/snippetservices-group4/parsers:latest
+          build-args: |
+            GRAD_USER=${{ secrets.GRAD_USER }}
+            GRAD_PASS=${{ secrets.GRAD_PASS }}

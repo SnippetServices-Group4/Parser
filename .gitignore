@@ -37,5 +37,6 @@ out/
 ### VS Code ###
 .vscode/
 
-### Sensitive information ###
+### Sensitive files ###
+.env
 gradle.properties
