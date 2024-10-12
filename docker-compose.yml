@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  application:
+  api:
     container_name: ${SPRING_APPLICATION_NAME}
     build:
       context: .
