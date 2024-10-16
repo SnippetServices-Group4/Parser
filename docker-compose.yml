@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   api:
-    container_name: ${SPRING_APPLICATION_NAME}
+    container_name: "${SPRING_APPLICATION_NAME}"
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      SPRING_APPLICATION_NAME: "${SPRING_APPLICATION_NAME}"
+      SPRING_PORT: "${SPRING_PORT}"
     ports:
       - ${SPRING_PORT}:${SPRING_PORT}
-    environment:
-      SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
-      SPRING_PORT: ${SPRING_PORT}
