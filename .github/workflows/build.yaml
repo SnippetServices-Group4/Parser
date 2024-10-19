@@ -6,6 +6,12 @@ on:
 
 jobs:
   call-build-workflow:
-    uses: SnippetServices-Group4/Workflows/.github/workflows/build.yml@main
-    with:
-      env_file: '.env'
+    runs-on: ubuntu-latest
+    steps:
+      - name: List files
+        run: ls -la
+
+      - name: Call build workflow
+        uses: SnippetServices-Group4/Workflows/.github/workflows/build.yml@main
+        with:
+          env_file: '.env'
