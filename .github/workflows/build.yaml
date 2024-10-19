@@ -6,7 +6,10 @@ on:
 
 jobs:
   set-environment:
-    run: ls -la
+    runs-on: ubuntu-latest
+    steps:
+      - name: List files
+        run: ls -la
 
   call-build-workflow:
     name: Call build workflow
