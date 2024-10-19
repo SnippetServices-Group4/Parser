@@ -11,7 +11,11 @@ jobs:
   test-job-to-see-if-pull-req-works:
     needs: call-build-workflow
     if: github.event_name == 'pull_request'
-    name: geda gedi
+    name: Test job to see if pull request works
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test step
+        run: echo "This is a test step"
 
   call-publish-prod-images-workflow:
     needs: call-build-workflow
