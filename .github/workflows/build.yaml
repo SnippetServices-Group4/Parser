@@ -23,7 +23,7 @@ jobs:
     name: Call publish images workflow for production
     uses: SnippetServices-Group4/Workflows/.github/workflows/publish-images.yaml@main
     secrets: inherit
-    inputs:
+    with:
         workflow_file_path: "ghcr.io/snippetservices-group4/parsers:latest"
 
   call-publish-dev-images-workflow:
@@ -32,5 +32,5 @@ jobs:
     name: Call publish images workflow for development
     uses: SnippetServices-Group4/Workflows/.github/workflows/publish-images.yaml@main
     secrets: inherit
-    inputs:
+    with:
         workflow_file_path: "ghcr.io/snippetservices-group4/parsers-dev:latest"
