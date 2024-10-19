@@ -14,4 +14,6 @@ jobs:
   call-build-workflow:
     name: Call build workflow
     uses: SnippetServices-Group4/Workflows/.github/workflows/build.yml@main
+    with:
+      env_file: '.env'
     secrets: inherit
