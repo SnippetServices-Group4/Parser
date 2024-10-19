@@ -5,15 +5,9 @@ on:
   pull_request:
 
 jobs:
-  set-environment:
-    runs-on: ubuntu-latest
-    steps:
-      - name: List files
-        run: ls -la
-
   call-build-workflow:
     name: Call build workflow
     uses: SnippetServices-Group4/Workflows/.github/workflows/build.yml@main
     with:
-      env_file: '.env'
+      env_file: '.env-example'
     secrets: inherit
