@@ -12,7 +12,7 @@ jobs:
     secrets: inherit
 
   call-publish-dev-images-workflow:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true && github.event.push.branch == 'dev'
     name: Call publish images workflow for development
     uses: SnippetServices-Group4/Workflows/.github/workflows/publish-images.yaml@main
     with:
