@@ -34,8 +34,6 @@ jobs:
     secrets: inherit
 
   call-deploy-development-vm-workflow:
-#    needs: call-publish-dev-images-workflow
-#    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Publish Docker images workflow for development'
     name: Call deploy images to development VM workflow
     uses: SnippetServices-Group4/Workflows/.github/workflows/deploy-images-dev-vm.yaml@main
     secrets: inherit
