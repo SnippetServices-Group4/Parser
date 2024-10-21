@@ -30,7 +30,10 @@ jobs:
     needs: call-publish-prod-images-workflow
     if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Publish Docker images workflow for production'
     name: Call deploy images to production VM workflow
-    uses: SnippetServices-Group4/Workflows/.github/workflows/deploy-images-prod-vm.yaml@main
+    uses: SnippetServices-Group4/Workflows/.github/workflows/deploy-images-vm.yaml@main
+    with:
+      environment: "production"
+      service_name: "parser"
     secrets: inherit
 
   call-deploy-development-vm-workflow:
