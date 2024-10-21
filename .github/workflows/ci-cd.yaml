@@ -37,3 +37,4 @@ jobs:
     name: Call deploy images to development VM workflow
     uses: SnippetServices-Group4/Workflows/.github/workflows/deploy-images-dev-vm.yaml@main
     secrets: inherit
+
