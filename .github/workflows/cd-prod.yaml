@@ -1,9 +1,9 @@
-name: "CD - Development"
+name: "CD - Production"
 
 on:
   pull_request:
     types: [closed]
-    branches: [dev]
+    branches: [main]
 
 jobs:
   publish-images-job:
@@ -11,7 +11,7 @@ jobs:
     name: Publish Docker Images
     uses: SnippetServices-Group4/Workflows/.github/workflows/publish-images.yaml@main
     with:
-      workflow_file_path: "ghcr.io/snippetservices-group4/parsers-dev:latest"
+      workflow_file_path: "ghcr.io/snippetservices-group4/parsers:latest"
     secrets: inherit
 
   deploy-vm-job:
@@ -19,6 +19,6 @@ jobs:
     name: Deploy Images in VM
     uses: SnippetServices-Group4/Workflows/.github/workflows/deploy-images-vm.yaml@main
     with:
-      environment: "development"
+      environment: "production"
       service_name: "parser"
     secrets: inherit
