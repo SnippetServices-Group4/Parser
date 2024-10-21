@@ -12,7 +12,6 @@ jobs:
     secrets: inherit
 
   call-publish-dev-images-workflow:
-    needs: call-build-workflow
     if: github.event.pull_request.merged == true
     name: Call publish images workflow for development
     uses: SnippetServices-Group4/Workflows/.github/workflows/publish-images.yaml@main
