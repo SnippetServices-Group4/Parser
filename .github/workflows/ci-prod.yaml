@@ -1,0 +1,12 @@
+name: "CI - Production"
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main]
+
+jobs:
+  build-job:
+    name: Build Job
+    uses: SnippetServices-Group4/Workflows/.github/workflows/build.yml@main
+    secrets: inherit
