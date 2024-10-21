@@ -1,0 +1,30 @@
+name: "Continuous Integration - Continuous Deployment (Production)"
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  call-build-workflow:
+    name: Call build workflow
+    uses: SnippetServices-Group4/Workflows/.github/workflows/build.yml@main
+    secrets: inherit
+
+  call-publish-prod-images-workflow:
+    needs: call-build-workflow
+    if: github.event.pull_request.merged == true
+    name: Call publish images workflow for production
+    uses: SnippetServices-Group4/Workflows/.github/workflows/publish-images.yaml@main
+    with:
+      workflow_file_path: "ghcr.io/snippetservices-group4/parsers:latest"
+    secrets: inherit
+
+  call-deploy-production-vm-workflow:
+    needs: call-publish-prod-images-workflow
+    name: Call deploy images to production VM workflow
+    uses: SnippetServices-Group4/Workflows/.github/workflows/deploy-images-vm.yaml@main
+    with:
+      environment: "production"
+      service_name: "parser"
+    secrets: inherit
