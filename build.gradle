@@ -54,6 +54,7 @@ dependencies {
 	implementation 'io.github.cdimascio:dotenv-java:2.3.1'
 
 	implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:+'
 }
 
 dependencyManagement {
