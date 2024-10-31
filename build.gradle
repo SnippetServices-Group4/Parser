@@ -9,6 +9,10 @@ version = '0.0.1-SNAPSHOT'
 
 repositories {
 	mavenCentral()
+	maven {
+		name = "GitHubPackages"
+		url = "https://maven.pkg.github.com/austral-ingsis/class-redis-streams"
+	}
 }
 
 jacocoTestReport {
@@ -44,6 +48,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'io.github.cdimascio:dotenv-java:2.3.1'
+
+	implementation 'org.austral.ingsis:redis-streams-flux:0.1.13'
 }
 
 dependencyManagement {
