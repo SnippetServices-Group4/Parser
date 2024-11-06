@@ -1,5 +1,7 @@
 package com.services.group4.parser.consumer.lint;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +29,14 @@ public class TestLintStreamProducer {
     redis.opsForStream().add(result);
   }
 
-  public void publishEvent(String message) {
-    System.out.println("Publishing message: " + message);
-    LintMessageProduct product = new LintMessageProduct(message);
-    emit(product);
+  public void publishEvent(Long userId, Map<String, Object> jsonPayload) {
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      String jsonPayloadString = mapper.writeValueAsString(jsonPayload);
+      LintMessageProduct product = new LintMessageProduct(userId, jsonPayloadString);
+      emit(product);
+    } catch (Exception e) {
+      System.err.println("Error serializing jsonPayload: " + e.getMessage());
+    }
   }
 }

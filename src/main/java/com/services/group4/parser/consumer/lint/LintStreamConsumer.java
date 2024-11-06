@@ -1,6 +1,9 @@
 package com.services.group4.parser.consumer.lint;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
+import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,17 @@ public class LintStreamConsumer extends RedisStreamConsumer<LintMessageProduct> 
 
   @Override
   protected void onMessage(@NotNull ObjectRecord<String, LintMessageProduct> objectRecord) {
-    System.out.println(objectRecord.getValue().message());
+    LintMessageProduct product = objectRecord.getValue();
+    System.out.println("UserId: " + product.userId());
+
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      Map<String, Object> payloadMap =
+          mapper.readValue(product.jsonPayload(), new TypeReference<>() {});
+      System.out.println("JSON Payload: " + payloadMap);
+    } catch (Exception e) {
+      System.err.println("Error deserializing jsonPayload: " + e.getMessage());
+    }
   }
 
   @NotNull
