@@ -22,8 +22,8 @@ public class TestLintStreamProducer {
     this.redis = redis;
   }
 
-  public void emit(LintMessageProduct product) {
-    ObjectRecord<String, LintMessageProduct> result =
+  public void emit(RulesMessageProduct product) {
+    ObjectRecord<String, RulesMessageProduct> result =
         StreamRecords.newRecord().ofObject(product).withStreamKey(streamKey);
 
     redis.opsForStream().add(result);
@@ -33,7 +33,7 @@ public class TestLintStreamProducer {
     ObjectMapper mapper = new ObjectMapper();
     try {
       String jsonPayloadString = mapper.writeValueAsString(jsonPayload);
-      LintMessageProduct product = new LintMessageProduct(userId, jsonPayloadString);
+      RulesMessageProduct product = new RulesMessageProduct(userId, jsonPayloadString);
       emit(product);
     } catch (Exception e) {
       System.err.println("Error serializing jsonPayload: " + e.getMessage());

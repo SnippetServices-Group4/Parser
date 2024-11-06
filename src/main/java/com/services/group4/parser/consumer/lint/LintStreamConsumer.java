@@ -14,7 +14,7 @@ import org.springframework.data.redis.stream.StreamReceiver;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LintStreamConsumer extends RedisStreamConsumer<LintMessageProduct> {
+public class LintStreamConsumer extends RedisStreamConsumer<RulesMessageProduct> {
   @Autowired
   public LintStreamConsumer(
       @Value("${stream.lint.key}") String streamKey,
@@ -24,8 +24,8 @@ public class LintStreamConsumer extends RedisStreamConsumer<LintMessageProduct> 
   }
 
   @Override
-  protected void onMessage(@NotNull ObjectRecord<String, LintMessageProduct> objectRecord) {
-    LintMessageProduct product = objectRecord.getValue();
+  protected void onMessage(@NotNull ObjectRecord<String, RulesMessageProduct> objectRecord) {
+    RulesMessageProduct product = objectRecord.getValue();
     System.out.println("UserId: " + product.userId());
 
     ObjectMapper mapper = new ObjectMapper();
@@ -40,11 +40,11 @@ public class LintStreamConsumer extends RedisStreamConsumer<LintMessageProduct> 
 
   @NotNull
   @Override
-  protected StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, LintMessageProduct>>
+  protected StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, RulesMessageProduct>>
       options() {
     return StreamReceiver.StreamReceiverOptions.builder()
         .pollTimeout(Duration.ofSeconds(1))
-        .targetType(LintMessageProduct.class)
+        .targetType(RulesMessageProduct.class)
         .build();
   }
 }
