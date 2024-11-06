@@ -55,6 +55,10 @@ dependencies {
 
 	implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:+'
+
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
 }
 
 dependencyManagement {
