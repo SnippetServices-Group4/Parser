@@ -17,6 +17,14 @@ repositories {
 			password = project.findProperty("gpr.token") ?: System.getenv("GRAD_PASS")
 		}
 	}
+	maven {
+		name = "GitHubPackages"
+		url = uri("https://maven.pkg.github.com/Agustin5421/PrintScript")
+		credentials {
+			username = project.findProperty("gpr.user") ?: System.getenv("GRAD_USER")
+			password = project.findProperty("gpr.token") ?: System.getenv("GRAD_PASS")
+		}
+	}
 }
 
 jacocoTestReport {
@@ -53,12 +61,24 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'io.github.cdimascio:dotenv-java:2.3.1'
 
+//	Redis dependencies
 	implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:+'
 
+//	Jackson parsing dependencies
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 	implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
 	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+
+//	PrintScript dependencies
+	def version = '1.1.41'
+	implementation 'com.ingsis:lexer:' + version
+	implementation 'com.ingsis:parser:' + version
+	implementation 'com.ingsis:interpreter:' + version
+	implementation 'com.ingsis:formatter:' + version
+	implementation 'com.ingsis:linter:' + version
+	implementation 'com.ingsis:runner:' + version
+	implementation 'com.ingsis:utils:' + version
 }
 
 dependencyManagement {
