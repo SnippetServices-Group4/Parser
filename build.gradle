@@ -79,6 +79,10 @@ dependencies {
 	implementation 'com.ingsis:linter:' + version
 	implementation 'com.ingsis:runner:' + version
 	implementation 'com.ingsis:utils:' + version
+
+//	Bucket related dependencies
+	compileOnly 'org.projectlombok:lombok:1.18.32'
+	annotationProcessor 'org.projectlombok:lombok:1.18.32'
 }
 
 dependencyManagement {
