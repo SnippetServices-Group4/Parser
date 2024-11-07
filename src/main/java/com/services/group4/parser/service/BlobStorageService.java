@@ -1,13 +1,11 @@
 package com.services.group4.parser.service;
 
-import com.services.group4.parser.client.BucketClient;
+import com.services.group4.parser.clients.BucketClient;
 import java.util.Optional;
-import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Generated
 @Service
 public class BlobStorageService {
 

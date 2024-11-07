@@ -1,4 +1,4 @@
-package com.services.group4.parser.client;
+package com.services.group4.parser.clients;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
