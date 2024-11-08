@@ -38,5 +38,5 @@ out/
 .vscode/
 
 ### Sensitive files ###
-.env
-gradle.properties
+src/main/resources/.env
+src/main/resources/gradle.properties
