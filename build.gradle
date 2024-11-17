@@ -9,6 +9,14 @@ version = '0.0.1-SNAPSHOT'
 
 repositories {
 	mavenCentral()
+	maven {
+		name = "GitHubPackages"
+		url = "https://maven.pkg.github.com/austral-ingsis/class-redis-streams"
+		credentials {
+			username = project.findProperty("gpr.user") ?: System.getenv("GRAD_USER")
+			password = project.findProperty("gpr.token") ?: System.getenv("GRAD_PASS")
+		}
+	}
 }
 
 jacocoTestReport {
@@ -44,6 +52,11 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'io.github.cdimascio:dotenv-java:2.3.1'
+
+//	Redis dependencies
+	implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:+'
+	implementation 'org.jetbrains:annotations:24.0.1'
 }
 
 dependencyManagement {
