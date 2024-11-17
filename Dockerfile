@@ -15,4 +15,7 @@ FROM amazoncorretto:21.0.4
 EXPOSE 8082
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=production","/app/spring-boot-application.jar"]
+COPY newrelic-agent/newrelic.jar /app/newrelic.jar
+COPY ./newrelic-agent/newrelic.yml /app/newrelic.yml
+WORKDIR /app
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=production", "-javaagent:/app/newrelic.jar", "/app/spring-boot-application.jar"]
