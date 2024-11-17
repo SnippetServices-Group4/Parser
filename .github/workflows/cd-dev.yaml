@@ -4,6 +4,7 @@ on:
   pull_request:
     types: [closed]
     branches: [dev]
+#Simplify Publishing 
   push:
     branches: 
       - dev
