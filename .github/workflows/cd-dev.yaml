@@ -4,12 +4,9 @@ on:
   pull_request:
     types: [closed]
     branches: [dev]
-  workflow_dispatch:
-    inputs:
-      trigger_event:
-        description: "Ejecutar la acción manualmente"
-        required: false
-        default: "manual"
+  push:
+    branches: 
+      - dev
 
 jobs:
   publish-images-job:
