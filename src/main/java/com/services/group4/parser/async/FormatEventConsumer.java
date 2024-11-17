@@ -50,11 +50,10 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
 
   @Override
   protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>>
-  options() {
+      options() {
     return StreamReceiver.StreamReceiverOptions.builder()
         .pollTimeout(Duration.ofSeconds(1))
         .targetType(String.class)
         .build();
   }
 }
-
