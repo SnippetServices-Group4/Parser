@@ -2,6 +2,7 @@ package com.services.group4.parser.services.async;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.services.group4.parser.dto.LintRulesDto;
 import java.time.Duration;
 import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;
@@ -45,6 +46,11 @@ public class LintEventConsumer extends RedisStreamConsumer<String> {
       // Optionally parse the `config` field if needed
       Map<String, Object> configMap = mapper.readValue(configJson, new TypeReference<>() {});
       System.out.println("Parsed Config as Map: " + configMap);
+
+      LintRulesDto config = mapper.convertValue(configMap, LintRulesDto.class);
+      System.out.println("Parsed Config as DTO: " + config);
+
+      //      TODO: Call ParserService to lint the snippet
     } catch (Exception e) {
       System.err.println("Error deserializing message: " + e.getMessage());
     }
