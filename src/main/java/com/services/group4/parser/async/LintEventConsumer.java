@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class LintEventConsumer extends RedisStreamConsumer<String> {
-
   private final ObjectMapper mapper;
 
   @Autowired
