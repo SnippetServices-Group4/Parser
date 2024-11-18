@@ -40,3 +40,5 @@ out/
 ### Sensitive files ###
 src/main/resources/.env
 src/main/resources/gradle.properties
+.env
+gradle.properties
