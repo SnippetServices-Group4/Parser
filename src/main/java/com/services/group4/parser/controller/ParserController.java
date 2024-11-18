@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/parsers")
 public class ParserController {
@@ -24,8 +22,10 @@ public class ParserController {
   }
 
   @PostMapping("/{snippetId}")
-  public ResponseEntity<ExecuteResultDto> execute(@PathVariable Long snippetId, @RequestBody ExecuteRequestDto request) {
-    return parserService.execute(snippetId, request)
+  public ResponseEntity<ExecuteResultDto> execute(
+      @PathVariable Long snippetId, @RequestBody ExecuteRequestDto request) {
+    return parserService
+        .execute(snippetId, request)
         .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }

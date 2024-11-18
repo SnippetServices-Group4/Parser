@@ -1,20 +1,16 @@
 package com.services.group4.parser.services;
 
 import com.services.group4.parser.common.Language;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.*;
-
 import com.services.group4.parser.dto.ExecuteRequestDto;
 import com.services.group4.parser.dto.ExecuteResultDto;
 import input.InputHandler;
-import input.InputMock;
 import input.InputQueue;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import output.OutputMock;
 import output.OutputResult;
 import output.OutputString;
 import runner.Runner;
@@ -35,7 +31,8 @@ public class ParserService {
     String language = request.getLanguage();
     String version = request.getVersion();
 
-    if (languages.stream().noneMatch(l -> l.getLangName().equals(language) && l.getVersion().contains(version))) {
+    if (languages.stream()
+        .noneMatch(l -> l.getLangName().equals(language) && l.getVersion().contains(version))) {
       throw new NoSuchElementException("Language not supported");
     }
 

@@ -1,7 +1,8 @@
-package com.services.group4.parser.async;
+package com.services.group4.parser.services.async;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.services.group4.parser.dto.FormatRulesDto;
 import java.time.Duration;
 import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;
@@ -45,6 +46,11 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
       // Optionally parse the `config` field if needed
       Map<String, Object> configMap = mapper.readValue(configJson, new TypeReference<>() {});
       System.out.println("Parsed Config as Map: " + configMap);
+
+      FormatRulesDto config = mapper.convertValue(configMap, FormatRulesDto.class);
+      System.out.println("Parsed Config as DTO: " + config);
+
+      //       TODO: Call ParserService to format the snippet
     } catch (Exception e) {
       System.err.println("Error deserializing message: " + e.getMessage());
     }

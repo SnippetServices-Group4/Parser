@@ -1,11 +1,10 @@
 package com.services.group4.parser.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SnippetService {
@@ -14,7 +13,7 @@ public class SnippetService {
 
   @Autowired
   public SnippetService(BlobStorageService blobStorageService) {
-      this.blobStorageService = blobStorageService;
+    this.blobStorageService = blobStorageService;
   }
 
   public Optional<String> getSnippet(Long snippetId) {
@@ -39,5 +38,4 @@ public class SnippetService {
       blobStorageService.saveSnippet(container, i, snippet);
     }
   }
-
 }

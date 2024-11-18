@@ -9,9 +9,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ExecuteRequestDto {
-    @NotNull(message = "The version is required")
-    private String version;
+  @NotNull(message = "The version is required")
+  private String version;
 
-    @NotNull(message = "The language is required")
-    private String language;
+  @NotNull(message = "The language is required")
+  private String language;
 }
