@@ -11,13 +11,12 @@ services:
       SPRING_PORT: "${SPRING_PORT}"
       REDIS_HOST: "${REDIS_HOST}"
       REDIS_PORT: "${REDIS_PORT}"
-    env_file:
-      - .env
     ports:
       - ${SPRING_PORT}:${SPRING_PORT}
+
   # snippet-asset-service
   asset-api:
-    container_name: "asset_service"
+    container_name: "parser-asset_service"
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
     ports:
       - "${BUCKET_PORT}:8080"
@@ -28,7 +27,7 @@ services:
 
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
-    container_name: "azurite-snippets"
+    container_name: "parser-azurite-snippets"
     hostname: azurite-snippets
     restart: always
     ports:
