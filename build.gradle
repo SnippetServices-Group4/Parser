@@ -8,10 +8,19 @@ group = 'com.services.group4'
 version = '0.0.1-SNAPSHOT'
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 	maven {
 		name = "GitHubPackages"
 		url = "https://maven.pkg.github.com/austral-ingsis/class-redis-streams"
+		credentials {
+			username = project.findProperty("gpr.user") ?: System.getenv("GRAD_USER")
+			password = project.findProperty("gpr.token") ?: System.getenv("GRAD_PASS")
+		}
+	}
+	maven {
+		name = "GitHubPackages"
+		url = uri("https://maven.pkg.github.com/Agustin5421/PrintScript")
 		credentials {
 			username = project.findProperty("gpr.user") ?: System.getenv("GRAD_USER")
 			password = project.findProperty("gpr.token") ?: System.getenv("GRAD_PASS")
@@ -48,9 +57,28 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	runtimeOnly 'org.postgresql:postgresql'
+
+	compileOnly 'org.projectlombok:lombok:1.18.32'
+	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+
+	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+	testImplementation 'org.mockito:mockito-core'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+	def version = '1.1.40'
+	implementation 'com.ingsis:lexer:' + version
+	implementation 'com.ingsis:parser:' + version
+	implementation 'com.ingsis:interpreter:' + version
+	implementation 'com.ingsis:formatter:' + version
+	implementation 'com.ingsis:linter:' + version
+	implementation 'com.ingsis:runner:' + version
+	implementation 'com.ingsis:utils:' + version
 	implementation 'io.github.cdimascio:dotenv-java:2.3.1'
 
 //	Redis dependencies
