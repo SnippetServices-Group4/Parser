@@ -1,7 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
-	id 'com.services.group4.common-conventions' version '1.0.6'
+	id 'com.services.group4.common-conventions' version '1.0.8'
 }
 
 group = 'com.services.group4'
@@ -10,6 +10,14 @@ version = '0.0.1-SNAPSHOT'
 repositories {
 	mavenLocal()
 	mavenCentral()
+	maven {
+		name = "GitHubPackages"
+		url = "https://maven.pkg.github.com/austral-ingsis/class-redis-streams"
+		credentials {
+			username = project.findProperty("gpr.user") ?: System.getenv("GRAD_USER")
+			password = project.findProperty("gpr.token") ?: System.getenv("GRAD_PASS")
+		}
+	}
 	maven {
 		name = "GitHubPackages"
 		url = uri("https://maven.pkg.github.com/Agustin5421/PrintScript")
@@ -72,6 +80,11 @@ dependencies {
 	implementation 'com.ingsis:runner:' + version
 	implementation 'com.ingsis:utils:' + version
 	implementation 'io.github.cdimascio:dotenv-java:2.3.1'
+
+//	Redis dependencies
+	implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:+'
+	implementation 'org.jetbrains:annotations:24.0.1'
 }
 
 dependencyManagement {

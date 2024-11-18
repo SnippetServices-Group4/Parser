@@ -6,6 +6,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      SPRING_APPLICATION_NAME: "${SPRING_APPLICATION_NAME}"
+      SPRING_PORT: "${SPRING_PORT}"
+      REDIS_HOST: "${REDIS_HOST}"
+      REDIS_PORT: "${REDIS_PORT}"
     env_file:
       - .env
     ports:
