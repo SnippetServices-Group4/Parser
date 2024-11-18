@@ -1,4 +1,4 @@
-package com.services.group4.parser.async;
+package com.services.group4.parser.services.async;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,13 +14,13 @@ import org.springframework.data.redis.stream.StreamReceiver;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LintEventConsumer extends RedisStreamConsumer<String> {
+public class FormatEventConsumer extends RedisStreamConsumer<String> {
   private final ObjectMapper mapper;
 
   @Autowired
-  public LintEventConsumer(
-      @Value("${stream.lint.key}") String streamKey,
-      @Value("${groups.lint}") String groupId,
+  public FormatEventConsumer(
+      @Value("${stream.format.key}") String streamKey,
+      @Value("${groups.format}") String groupId,
       @NotNull RedisTemplate<String, String> redis) {
     super(streamKey, groupId, redis);
     mapper = new ObjectMapper();
