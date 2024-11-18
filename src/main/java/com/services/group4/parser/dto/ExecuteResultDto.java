@@ -6,12 +6,11 @@ import lombok.Generated;
 @Data
 @Generated
 public class ExecuteResultDto {
-    private String printLog;
-    private String errorLog;
+  private String printLog;
+  private String errorLog;
 
-    public ExecuteResultDto(String printLog, String errorLog) {
-        this.printLog = printLog;
-        this.errorLog = errorLog;
-    }
-
+  public ExecuteResultDto(String printLog, String errorLog) {
+    this.printLog = printLog;
+    this.errorLog = errorLog;
+  }
 }
