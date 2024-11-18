@@ -15,12 +15,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FormatEventConsumer extends RedisStreamConsumer<String> {
+  private final ObjectMapper mapper;
+
   @Autowired
   public FormatEventConsumer(
       @Value("${stream.format.key}") String streamKey,
       @Value("${groups.format}") String groupId,
       @NotNull RedisTemplate<String, String> redis) {
     super(streamKey, groupId, redis);
+    mapper = new ObjectMapper();
   }
 
   @Override
@@ -28,7 +31,6 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
     String jsonString = objectRecord.getValue();
     System.out.println("Received JSON: " + jsonString);
 
-    ObjectMapper mapper = new ObjectMapper();
     try {
       // Deserialize the JSON string into a Map
       Map<String, Object> messageMap = mapper.readValue(jsonString, new TypeReference<>() {});

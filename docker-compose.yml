@@ -9,5 +9,7 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "${SPRING_APPLICATION_NAME}"
       SPRING_PORT: "${SPRING_PORT}"
+      REDIS_HOST: "${REDIS_HOST}"
+      REDIS_PORT: "${REDIS_PORT}"
     ports:
       - ${SPRING_PORT}:${SPRING_PORT}
