@@ -22,8 +22,8 @@ repositories {
 		name = "GitHubPackages"
 		url = uri("https://maven.pkg.github.com/Agustin5421/PrintScript")
 		credentials {
-			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-			password = project.findProperty("gpr.token") ?: System.getenv("TOKEN")
+			username = project.findProperty("gpr.user") ?: System.getenv("GRAD_USER")
+			password = project.findProperty("gpr.token") ?: System.getenv("GRAD_PASS")
 		}
 	}
 }
