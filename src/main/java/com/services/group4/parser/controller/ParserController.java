@@ -7,6 +7,7 @@ import com.services.group4.parser.dto.request.TestRequestDto;
 import com.services.group4.parser.dto.result.ExecuteResultDto;
 import com.services.group4.parser.dto.result.FormattingResultDto;
 import com.services.group4.parser.dto.result.ResponseDto;
+import com.services.group4.parser.dto.result.TestResponseDto;
 import com.services.group4.parser.services.ParserService;
 import com.services.group4.parser.services.SnippetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class ParserController {
   }
 
   @PostMapping("/runTest")
-  public ResponseEntity<ResponseDto<TestState>> testSnippet(@RequestBody TestRequestDto request) {
+  public ResponseEntity<ResponseDto<TestResponseDto>> testSnippet(@RequestBody TestRequestDto request) {
     return parserService.runTest(request);
   }
 

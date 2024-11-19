@@ -11,6 +11,7 @@ import com.services.group4.parser.dto.request.TestRequestDto;
 import com.services.group4.parser.dto.result.ExecuteResultDto;
 import com.services.group4.parser.dto.result.FormattingResultDto;
 import com.services.group4.parser.dto.result.ResponseDto;
+import com.services.group4.parser.dto.result.TestResponseDto;
 import com.services.group4.parser.services.adapter.FormatConfigAdapter;
 import com.services.group4.parser.services.utils.OutputListString;
 import input.InputHandler;
@@ -87,7 +88,7 @@ public class ParserService {
     return new ExecuteResultDto(printLog.getResult(), errorLog.getResult());
   }
 
-  public ResponseEntity<ResponseDto<TestState>> runTest(TestRequestDto request) {
+  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(TestRequestDto request) {
     String snippet = snippetService.getSnippet(request.getSnippetId());
 
     Runner runner = new Runner();
@@ -103,8 +104,8 @@ public class ParserService {
 
     boolean success = testOutput.getListString().equals(request.getOutputs());
 
-    return FullResponse.create( "Test ran successfully",
-        "testState", success ? TestState.PASSED : TestState.FAILED, HttpStatus.OK);
+    return FullResponse.create( "Test ran successfully", "executedTest",
+        new TestResponseDto(request.getSnippetId(), request.getTestId(),  success ? TestState.PASSED : TestState.FAILED), HttpStatus.OK);
   }
 
   public Optional<FormattingResultDto> format(Long snippetId, FormattingRequestDto request) {
