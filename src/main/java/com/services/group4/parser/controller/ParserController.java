@@ -30,45 +30,34 @@ public class ParserController {
   }
 
   @PostMapping("/execute/{snippetId}")
-  public ResponseEntity<ExecuteResultDto> execute(
+  public ResponseEntity<ResponseDto<ExecuteResultDto>> execute(
       @PathVariable Long snippetId, @RequestBody ProcessingRequestDto request) {
-    return parserService
-        .execute(snippetId, request)
-        .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    return parserService.execute(snippetId, request);
   }
 
   @PostMapping("/format/{snippetId}")
-  public ResponseEntity<FormattingResultDto> format(
+  public ResponseEntity<ResponseDto<FormattingResultDto>> format(
           @PathVariable Long snippetId, @RequestBody FormattingRequestDto request) {
     return parserService
-            .format(snippetId, request)
-            .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
-            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            .format(snippetId, request);
   }
 
   @PostMapping("/lint/{snippetId}")
-  public ResponseEntity<LintingResultDto> lint(
+  public ResponseEntity<ResponseDto<LintingResultDto>> lint(
           @PathVariable Long snippetId, @RequestBody LintingRequestDto request) {
-    return parserService
-            .lint(snippetId, request)
-            .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
-            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    return parserService.lint(snippetId, request);
   }
 
   @PostMapping("/validate/{snippetId}")
-  public ResponseEntity<ValidateResultDto> analyze(
+  public ResponseEntity<ResponseDto<ValidateResultDto>> analyze(
           @PathVariable Long snippetId, @RequestBody ProcessingRequestDto request) {
-    return parserService
-            .validate(snippetId, request)
-            .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
-            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    return parserService.validate(snippetId, request);
   }
+
   @PostMapping("/runTest")
   public ResponseEntity<ResponseDto<TestResponseDto>> testSnippet(@RequestBody TestRequestDto request) {
     return parserService.runTest(request);
   }
-
 
   @GetMapping("/setEnv")
   public ResponseEntity<String> setEnv() {
