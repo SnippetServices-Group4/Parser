@@ -1,7 +1,9 @@
 package com.services.group4.parser.controller;
 
-import com.services.group4.parser.dto.ExecuteRequestDto;
-import com.services.group4.parser.dto.ExecuteResultDto;
+import com.services.group4.parser.dto.request.ExecuteRequestDto;
+import com.services.group4.parser.dto.request.FormattingRequestDto;
+import com.services.group4.parser.dto.result.ExecuteResultDto;
+import com.services.group4.parser.dto.result.FormattingResultDto;
 import com.services.group4.parser.services.ParserService;
 import com.services.group4.parser.services.SnippetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ public class ParserController {
     this.snippetService = snippetService;
   }
 
-  @PostMapping("/{snippetId}")
+  @PostMapping("/execute/{snippetId}")
   public ResponseEntity<ExecuteResultDto> execute(
       @PathVariable Long snippetId, @RequestBody ExecuteRequestDto request) {
     return parserService
@@ -29,6 +31,16 @@ public class ParserController {
         .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
+
+  @PostMapping("/format/{snippetId}")
+  public ResponseEntity<FormattingResultDto> format(
+          @PathVariable Long snippetId, @RequestBody FormattingRequestDto request) {
+    return parserService
+            .format(snippetId, request)
+            .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
 
   @GetMapping("/setEnv")
   public ResponseEntity<String> setEnv() {

@@ -2,7 +2,7 @@ package com.services.group4.parser.services.async;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.services.group4.parser.dto.LintRulesDto;
+import com.services.group4.parser.dto.request.LintRulesDto;
 import java.time.Duration;
 import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;

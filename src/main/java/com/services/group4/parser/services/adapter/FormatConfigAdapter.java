@@ -1,7 +1,7 @@
 package com.services.group4.parser.services.adapter;
 
 import com.google.gson.JsonObject;
-import com.services.group4.parser.dto.FormatRulesDto;
+import com.services.group4.parser.dto.request.FormatRulesDto;
 
 public class FormatConfigAdapter {
   public String adaptFormatConfig(FormatRulesDto config) {

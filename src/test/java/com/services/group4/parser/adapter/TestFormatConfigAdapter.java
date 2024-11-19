@@ -2,7 +2,7 @@ package com.services.group4.parser.adapter;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.services.group4.parser.dto.FormatRulesDto;
+import com.services.group4.parser.dto.request.FormatRulesDto;
 import com.services.group4.parser.services.adapter.FormatConfigAdapter;
 import org.junit.jupiter.api.Test;
 

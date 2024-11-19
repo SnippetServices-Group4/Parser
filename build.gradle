@@ -72,7 +72,7 @@ dependencies {
 	testImplementation 'org.mockito:mockito-core'
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 
-	def version = '1.1.40'
+	def version = '1.1.41'
 	implementation 'com.ingsis:lexer:' + version
 	implementation 'com.ingsis:parser:' + version
 	implementation 'com.ingsis:interpreter:' + version
