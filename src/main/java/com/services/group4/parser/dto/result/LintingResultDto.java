@@ -4,7 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
-import output.OutputReport;
+import report.Report;
+
+import java.util.List;
 
 @Generated
 @Getter
@@ -12,7 +14,7 @@ import output.OutputReport;
 public class LintingResultDto {
 
     @NotNull(message = "The report is required")
-    private OutputReport report;
+    private List<Report> report;
 
     @NotNull(message = "The language is required")
     private String language;
@@ -26,7 +28,7 @@ public class LintingResultDto {
 
     public LintingResultDto() {}
 
-    public LintingResultDto(OutputReport  report, String language, String version, String rulesUsed) {
+    public LintingResultDto(List<Report>  report, String language, String version, String rulesUsed) {
         this.report = report;
         this.language = language;
         this.version = version;

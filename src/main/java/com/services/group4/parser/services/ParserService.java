@@ -22,7 +22,11 @@ import runner.Runner;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Queue;
 
 @Service
 public class ParserService {
@@ -126,7 +130,7 @@ public class ParserService {
 
     OutputReport report = lint(snippet, version, rules);
 
-    return Optional.of(new LintingResultDto(report, language, version, rules));
+    return Optional.of(new LintingResultDto(report.getFullReport().getReports(), language, version, rules));
   }
 
   private OutputReport lint(Optional<String> snippet, String version, String lintRules) {
