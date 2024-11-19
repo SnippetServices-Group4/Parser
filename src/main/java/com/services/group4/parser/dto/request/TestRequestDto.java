@@ -10,7 +10,7 @@ import java.util.List;
 @Generated
 @Getter
 @Setter
-public class TestRequestDto extends ExecuteRequestDto {
+public class TestRequestDto extends ProcessingRequestDto {
     @NotNull(message = "The testId is required")
     private String testId;
 

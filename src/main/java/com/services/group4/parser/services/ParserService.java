@@ -3,9 +3,7 @@ package com.services.group4.parser.services;
 import com.services.group4.parser.clients.BucketClient;
 import com.services.group4.parser.common.Language;
 import com.services.group4.parser.common.TestState;
-import com.services.group4.parser.common.response.DataTuple;
 import com.services.group4.parser.common.response.FullResponse;
-import com.services.group4.parser.dto.request.ExecuteRequestDto;
 import com.services.group4.parser.common.ValidationState;
 import com.services.group4.parser.dto.ValidateResultDto;
 import com.services.group4.parser.dto.request.ProcessingRequestDto;
@@ -159,7 +157,7 @@ public class ParserService {
 
     validateLanguage(language, version);
 
-    Optional<String> snippet = snippetService.getSnippet(snippetId);
+    String snippet = snippetService.getSnippet(snippetId);
 
     LintConfigAdapter lintConfigAdapter = new LintConfigAdapter();
     String rules = lintConfigAdapter.adaptLintConfig(request.getLintRules());
@@ -169,13 +167,13 @@ public class ParserService {
     return Optional.of(new LintingResultDto(report.getFullReport().getReports(), language, version, rules));
   }
 
-  private OutputReport lint(Optional<String> snippet, String version, String lintRules) {
+  private OutputReport lint(String snippet, String version, String lintRules) {
     if (snippet.isEmpty()) {
       throw new NoSuchElementException("Snippet not found");
     }
 
     Runner runner = new Runner();
-    InputStream stream = new ByteArrayInputStream(snippet.get().getBytes());
+    InputStream stream = new ByteArrayInputStream(snippet.getBytes());
     OutputReport output = new OutputReport();
 
     runner.analyze(stream, version, lintRules, output);
@@ -189,14 +187,14 @@ public class ParserService {
 
     validateLanguage(language, version);
 
-    Optional<String> snippet = snippetService.getSnippet(snippetId);
+    String snippet = snippetService.getSnippet(snippetId);
 
     if (snippet.isEmpty()) {
       throw new NoSuchElementException("Snippet not found");
     }
 
     Runner runner = new Runner();
-    InputStream stream = new ByteArrayInputStream(snippet.get().getBytes());
+    InputStream stream = new ByteArrayInputStream(snippet.getBytes());
     ValidationState state;
     String report;
 
