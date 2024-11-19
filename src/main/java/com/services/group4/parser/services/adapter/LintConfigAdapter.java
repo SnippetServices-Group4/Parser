@@ -11,7 +11,9 @@ public class LintConfigAdapter {
     JsonObject identifier = getIdentifierConfig(config);
     JsonObject callExpression = getCallExpressionConfig(config);
 
-    result.add("identifier", identifier);
+    if (!identifier.entrySet().isEmpty()) {
+      result.add("identifier", identifier);
+    }
     if (!callExpression.entrySet().isEmpty()) {
       result.add("callExpression", callExpression);
     }
@@ -25,12 +27,16 @@ public class LintConfigAdapter {
 
     String writingConventionName = config.getWritingConventionName();
 
-    if (writingConventionName.equals("snakeCase")) {
+    if (writingConventionName == null) {
+      return identifier;
+    } else if (writingConventionName.equals("snakeCase")) {
       writingConvention.addProperty("conventionName", "snakeCase");
       writingConvention.addProperty("conventionPattern", "^[a-z]+(_[a-z0-9]+)*$");
-    } else {
+    } else if (writingConventionName.equals("camelCase")) {
       writingConvention.addProperty("conventionName", "camelCase");
       writingConvention.addProperty("conventionPattern", "^[a-z]+(?:[A-Z]?[a-z0-9]+)*$");
+    } else {
+      return identifier;
     }
 
     identifier.add("writingConvention", writingConvention);
