@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.parser.dto.request.LintRulesDto;
 import java.time.Duration;
 import java.util.Map;
+
+import com.services.group4.parser.dto.request.LintingRequestDto;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ public class LintEventConsumer extends RedisStreamConsumer<String> {
 
       // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
-      String configJson = (String) messageMap.get("config");
+      String configJson = (String) messageMap.get("lintRules");
       System.out.println("SnippetId: " + snippetId);
       System.out.println("Config JSON String: " + configJson);
 
@@ -49,6 +51,9 @@ public class LintEventConsumer extends RedisStreamConsumer<String> {
 
       LintRulesDto config = mapper.convertValue(configMap, LintRulesDto.class);
       System.out.println("Parsed Config as DTO: " + config);
+
+      LintingRequestDto lintingRequest = new LintingRequestDto(config, messageMap.get("language").toString(), messageMap.get("version").toString());
+      System.out.println("Linting Request: " + lintingRequest);
 
       //      TODO: Call ParserService to lint the snippet
     } catch (Exception e) {

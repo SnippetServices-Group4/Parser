@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.parser.dto.request.FormatRulesDto;
 import java.time.Duration;
 import java.util.Map;
+
+import com.services.group4.parser.dto.request.FormattingRequestDto;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
 
       // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
-      String configJson = (String) messageMap.get("config");
+      String configJson = (String) messageMap.get("formatRules");
       System.out.println("SnippetId: " + snippetId);
       System.out.println("Config JSON String: " + configJson);
 
@@ -49,6 +51,9 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
 
       FormatRulesDto config = mapper.convertValue(configMap, FormatRulesDto.class);
       System.out.println("Parsed Config as DTO: " + config);
+
+      FormattingRequestDto formattingRequest = new FormattingRequestDto(config, messageMap.get("language").toString(), messageMap.get("version").toString());
+      System.out.println("Formatting Request: " + formattingRequest);
 
       //       TODO: Call ParserService to format the snippet
     } catch (Exception e) {
