@@ -16,14 +16,14 @@ public class SnippetService {
     this.blobStorageService = blobStorageService;
   }
 
-  public Optional<String> getSnippet(Long snippetId) {
+  public String getSnippet(Long snippetId) {
     Optional<String> content = blobStorageService.getSnippet(container, snippetId);
 
     if (content.isEmpty()) {
       throw new NoSuchElementException("Snippet content not found");
     }
 
-    return content;
+    return content.get();
   }
 
   public void setEnv() {

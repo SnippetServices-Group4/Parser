@@ -1,9 +1,12 @@
 package com.services.group4.parser.controller;
 
+import com.services.group4.parser.common.TestState;
 import com.services.group4.parser.dto.request.ExecuteRequestDto;
 import com.services.group4.parser.dto.request.FormattingRequestDto;
+import com.services.group4.parser.dto.request.TestRequestDto;
 import com.services.group4.parser.dto.result.ExecuteResultDto;
 import com.services.group4.parser.dto.result.FormattingResultDto;
+import com.services.group4.parser.dto.result.ResponseDto;
 import com.services.group4.parser.services.ParserService;
 import com.services.group4.parser.services.SnippetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,11 @@ public class ParserController {
             .format(snippetId, request)
             .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
+  @PostMapping("/runTest")
+  public ResponseEntity<ResponseDto<TestState>> testSnippet(@RequestBody TestRequestDto request) {
+    return parserService.runTest(request);
   }
 
 
