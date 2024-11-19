@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(value = "asset-api", url = "http://parser-asset_service:8080/v1")
+@FeignClient(value = "asset-api", url = "${asset.service.url}")
 public interface BucketClient {
 
   @GetMapping("/asset/{container}/{key}")
