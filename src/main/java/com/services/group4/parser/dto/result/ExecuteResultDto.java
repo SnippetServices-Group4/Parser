@@ -1,4 +1,4 @@
-package com.services.group4.parser.dto;
+package com.services.group4.parser.dto.result;
 
 import lombok.Data;
 import lombok.Generated;

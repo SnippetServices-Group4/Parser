@@ -3,7 +3,7 @@ package com.services.group4.parser.adapter;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.services.group4.parser.dto.LintRulesDto;
+import com.services.group4.parser.dto.request.LintRulesDto;
 import com.services.group4.parser.services.adapter.LintConfigAdapter;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package com.services.group4.parser.dto;
+package com.services.group4.parser.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

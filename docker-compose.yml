@@ -1,11 +1,10 @@
-version: '3.8'
-
 services:
   api:
     container_name: "${SPRING_APPLICATION_NAME}"
     build:
       context: .
       dockerfile: Dockerfile
+
     environment:
       SPRING_APPLICATION_NAME: "${SPRING_APPLICATION_NAME}"
       SPRING_PORT: "${SPRING_PORT}"
@@ -36,6 +35,13 @@ services:
       - "10002:10002"
     volumes:
       - blob:/workspace
+
+  redis:
+    container_name: "${REDIS_HOST}"
+    image: redis:6-alpine
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+
 volumes:
   blob:
     external: false

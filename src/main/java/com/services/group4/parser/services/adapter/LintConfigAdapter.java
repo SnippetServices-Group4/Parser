@@ -2,7 +2,7 @@ package com.services.group4.parser.services.adapter;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.services.group4.parser.dto.LintRulesDto;
+import com.services.group4.parser.dto.request.LintRulesDto;
 
 public class LintConfigAdapter {
   public String adaptLintConfig(LintRulesDto config) {
