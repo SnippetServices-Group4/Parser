@@ -8,7 +8,7 @@ import lombok.Setter;
 @Generated
 @Getter
 @Setter
-public class ExecuteRequestDto {
+public class ProcessingRequestDto {
   @NotNull(message = "The version is required")
   private String version;
 

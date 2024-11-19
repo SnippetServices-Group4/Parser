@@ -27,10 +27,12 @@ public class SnippetService {
   }
 
   public void setEnv() {
-    String snippet1 = "let x : Number = 5;";
+    String snippet1 = "let x : number = 5;";
     String snippet2 = "let y:number = 10 + 10;";
     String snippet3 = "println('Hello World!');";
-    List<String> snippets = List.of(snippet1, snippet2, snippet3);
+    String snippet4 = "let my_var : string = 'Hello world' + 2; println(my_var);";
+    String invalidSnippet = "let x : number = 5";
+    List<String> snippets = List.of(snippet1, snippet2, snippet3, snippet4, invalidSnippet);
 
     Long i = 0L;
     for (String snippet : snippets) {

@@ -2,6 +2,10 @@ package com.services.group4.parser.controller;
 
 import com.services.group4.parser.common.TestState;
 import com.services.group4.parser.dto.request.ExecuteRequestDto;
+import com.services.group4.parser.dto.ValidateResultDto;
+import com.services.group4.parser.dto.request.LintingRequestDto;
+import com.services.group4.parser.dto.request.ProcessingRequestDto;
+import com.services.group4.parser.dto.result.LintingResultDto;
 import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.dto.request.TestRequestDto;
 import com.services.group4.parser.dto.result.ExecuteResultDto;
@@ -29,7 +33,7 @@ public class ParserController {
 
   @PostMapping("/execute/{snippetId}")
   public ResponseEntity<ExecuteResultDto> execute(
-      @PathVariable Long snippetId, @RequestBody ExecuteRequestDto request) {
+      @PathVariable Long snippetId, @RequestBody ProcessingRequestDto request) {
     return parserService
         .execute(snippetId, request)
         .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
@@ -45,6 +49,23 @@ public class ParserController {
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
+  @PostMapping("/lint/{snippetId}")
+  public ResponseEntity<LintingResultDto> lint(
+          @PathVariable Long snippetId, @RequestBody LintingRequestDto request) {
+    return parserService
+            .lint(snippetId, request)
+            .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
+
+  @PostMapping("/validate/{snippetId}")
+  public ResponseEntity<ValidateResultDto> analyze(
+          @PathVariable Long snippetId, @RequestBody ProcessingRequestDto request) {
+    return parserService
+            .validate(snippetId, request)
+            .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
   @PostMapping("/runTest")
   public ResponseEntity<ResponseDto<TestResponseDto>> testSnippet(@RequestBody TestRequestDto request) {
     return parserService.runTest(request);
