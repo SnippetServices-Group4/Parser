@@ -1,5 +1,7 @@
 package com.services.group4.parser.controller;
 
+import com.services.group4.parser.dto.request.LintingRequestDto;
+import com.services.group4.parser.dto.result.LintingResultDto;
 import com.services.group4.parser.dto.request.ExecuteRequestDto;
 import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.dto.result.ExecuteResultDto;
@@ -41,6 +43,14 @@ public class ParserController {
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
+  @PostMapping("/lint/{snippetId}")
+  public ResponseEntity<LintingResultDto> lint(
+          @PathVariable Long snippetId, @RequestBody LintingRequestDto request) {
+    return parserService
+            .lint(snippetId, request)
+            .map(result -> new ResponseEntity<>(result, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+  }
 
   @GetMapping("/setEnv")
   public ResponseEntity<String> setEnv() {
