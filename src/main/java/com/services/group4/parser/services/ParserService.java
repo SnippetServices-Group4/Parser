@@ -2,7 +2,9 @@ package com.services.group4.parser.services;
 
 import com.services.group4.parser.clients.BucketClient;
 import com.services.group4.parser.common.Language;
-import com.services.group4.parser.dto.request.ExecuteRequestDto;
+import com.services.group4.parser.common.ValidationState;
+import com.services.group4.parser.dto.ValidateResultDto;
+import com.services.group4.parser.dto.request.ProcessingRequestDto;
 import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.dto.request.LintingRequestDto;
 import com.services.group4.parser.dto.result.ExecuteResultDto;
@@ -52,7 +54,7 @@ public class ParserService {
   }
 
   //TODO: execute should switch on language
-  public Optional<ExecuteResultDto> execute(Long snippetId, ExecuteRequestDto request) {
+  public Optional<ExecuteResultDto> execute(Long snippetId, ProcessingRequestDto request) {
     String language = request.getLanguage().toLowerCase();
     String version = request.getVersion();
 
@@ -147,5 +149,33 @@ public class ParserService {
     return output;
   }
 
+  public Optional<ValidateResultDto> validate(Long snippetId, ProcessingRequestDto request) {
+    String language = request.getLanguage().toLowerCase();
+    String version = request.getVersion();
+
+    validateLanguage(language, version);
+
+    Optional<String> snippet = snippetService.getSnippet(snippetId);
+
+    if (snippet.isEmpty()) {
+      throw new NoSuchElementException("Snippet not found");
+    }
+
+    Runner runner = new Runner();
+    InputStream stream = new ByteArrayInputStream(snippet.get().getBytes());
+    ValidationState state;
+    String report;
+
+    try {
+      runner.validate(stream, version);
+      state = ValidationState.VALID;
+      report = "Validation successful";
+    } catch (Exception e) {
+      state = ValidationState.INVALID;
+      report = e.getMessage();
+    }
+
+    return Optional.of(new ValidateResultDto(report, state, language, version));
+  }
 }
 
