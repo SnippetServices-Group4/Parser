@@ -4,14 +4,13 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.services.group4.parser.dto.result.ResponseDto;
-
 import java.io.IOException;
 
 public class ResponseDtoSerializer<T> extends JsonSerializer<ResponseDto<T>> {
 
   @Override
   public void serialize(
-          ResponseDto<T> responseDto, JsonGenerator gen, SerializerProvider serializers)
+      ResponseDto<T> responseDto, JsonGenerator gen, SerializerProvider serializers)
       throws IOException {
     gen.writeStartObject();
     gen.writeStringField("message", responseDto.message());
