@@ -1,11 +1,11 @@
 package com.services.group4.parser.dto.result;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 import report.Report;
-import java.util.List;
 
 @Generated
 @Getter
@@ -29,11 +29,12 @@ public class LintingResultDto {
 
   public LintingResultDto() {}
 
-    public LintingResultDto(Long snippetId, List<Report> report, String language, String version, String rulesUsed) {
-        this.snippetId = snippetId;
-        this.report = report;
-        this.language = language;
-        this.version = version;
-        this.rulesUsed = rulesUsed;
-    }
+  public LintingResultDto(
+      Long snippetId, List<Report> report, String language, String version, String rulesUsed) {
+    this.snippetId = snippetId;
+    this.report = report;
+    this.language = language;
+    this.version = version;
+    this.rulesUsed = rulesUsed;
+  }
 }
