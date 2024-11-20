@@ -9,6 +9,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FormattingResultDto {
+  @NotNull(message = "The snippet id is required")
+  private Long snippetId;
+
   @NotNull(message = "The formatted code is required")
   private String formattedCode;
 
@@ -25,7 +28,8 @@ public class FormattingResultDto {
   public FormattingResultDto() {}
 
   public FormattingResultDto(
-      String formattedCode, String language, String version, String rulesUsed) {
+      Long snippetId, String formattedCode, String language, String version, String rulesUsed) {
+    this.snippetId = snippetId;
     this.formattedCode = formattedCode;
     this.language = language;
     this.version = version;

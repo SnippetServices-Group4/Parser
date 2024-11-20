@@ -13,8 +13,7 @@ public class TestDtoProvider {
   public static ProcessingRequestDto getProcessingRequestDto() {
     String language = "printscript";
     String version = "1.1";
-
-    return new ProcessingRequestDto(language, version);
+    return new ProcessingRequestDto(version, language, "let x : number = 5;");
   }
 
   public static LintingRequestDto getAnalyzeCamelCaseRequestDto() {
@@ -79,12 +78,6 @@ public class TestDtoProvider {
     String language = "printscript";
     String version = "1.1";
 
-    TestRequestDto request = new TestRequestDto();
-    request.setLanguage(language);
-    request.setVersion(version);
-    request.setInputs(input);
-    request.setOutputs(output);
-
-    return request;
+    return new TestRequestDto("1L", input, output, version, language, 1L);
   }
 }
