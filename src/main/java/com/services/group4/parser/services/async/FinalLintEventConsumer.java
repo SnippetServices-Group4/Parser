@@ -46,33 +46,26 @@ public class FinalLintEventConsumer extends RedisStreamConsumer<String> {
 
   @Override
   protected void onMessage(@NotNull ObjectRecord<String, String> objectRecord) {
+    System.out.println("\nFINAL LINT EVENT CONSUMER\n\n");
     String jsonString = objectRecord.getValue();
-    System.out.println("Received JSON: " + jsonString);
 
     try {
       // Deserialize the JSON string into a Map
       Map<String, Object> messageMap = mapper.readValue(jsonString, new TypeReference<>() {});
-      System.out.println("Parsed JSON as Map: " + messageMap);
 
       // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
       String configJson = (String) messageMap.get("lintRules");
-      System.out.println("SnippetId: " + snippetId);
-      System.out.println("Config JSON String: " + configJson);
 
       // Optionally parse the `config` field if needed
       Map<String, Object> configMap = mapper.readValue(configJson, new TypeReference<>() {});
-      System.out.println("Parsed Config as Map: " + configMap);
 
       LintRulesDto config = mapper.convertValue(configMap, LintRulesDto.class);
-      System.out.println("Parsed Config as DTO: " + config);
 
       LintingRequestDto lintingRequest =
           new LintingRequestDto(
               config, messageMap.get("language").toString(), messageMap.get("version").toString());
-      System.out.println("Linting Request: " + lintingRequest);
 
-      //      TODO: Call ParserService to lint the snippet
       ResponseEntity<ResponseDto<LintingResultDto>> result =
           parserService.lint(snippetId, lintingRequest);
       HttpStatusCode status = result.getStatusCode();
@@ -96,7 +89,7 @@ public class FinalLintEventConsumer extends RedisStreamConsumer<String> {
   protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>>
       options() {
     return StreamReceiver.StreamReceiverOptions.builder()
-        .pollTimeout(Duration.ofSeconds(1))
+        .pollTimeout(Duration.ofSeconds(2))
         .targetType(String.class)
         .build();
   }

@@ -2,7 +2,9 @@ package com.services.group4.parser.services.async;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.services.group4.parser.services.utils.LintStatus;
+import com.services.group4.parser.dto.request.FormatRulesDto;
+import com.services.group4.parser.dto.request.FormattingRequestDto;
+import com.services.group4.parser.services.ParserService;
 import java.time.Duration;
 import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;
@@ -15,35 +17,44 @@ import org.springframework.data.redis.stream.StreamReceiver;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TestResultLintEventConsumer extends RedisStreamConsumer<String> {
+public class FinalFormatEventConsumer extends RedisStreamConsumer<String> {
   private final ObjectMapper mapper;
+  private final ParserService parserService;
 
   @Autowired
-  public TestResultLintEventConsumer(
-      @Value("${stream.result.lint.key}") String streamKey,
-      @Value("test-lint-result-group") String groupId,
+  public FinalFormatEventConsumer(
+      @Value("${stream.final.format.key}") String streamKey,
+      @Value("${groups.format}") String groupId,
       @NotNull RedisTemplate<String, String> redis,
-      @NotNull ObjectMapper mapper) {
+      @NotNull ParserService parserService) {
     super(streamKey, groupId, redis);
-    this.mapper = mapper;
+    mapper = new ObjectMapper();
+    this.parserService = parserService;
   }
 
   @Override
   protected void onMessage(@NotNull ObjectRecord<String, String> objectRecord) {
+    System.out.println("\nFINAL FORMAT EVENT CONSUMER\n\n");
     String jsonString = objectRecord.getValue();
-    System.out.println("Received JSON: " + jsonString);
 
     try {
       // Deserialize the JSON string into a Map
       Map<String, Object> messageMap = mapper.readValue(jsonString, new TypeReference<>() {});
-      System.out.println("Parsed JSON as Map: " + messageMap);
 
       // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
-      LintStatus status = LintStatus.valueOf(messageMap.get("status").toString());
+      String configJson = (String) messageMap.get("formatRules");
 
-      System.out.println("SnippetId: " + snippetId);
-      System.out.println("Status: " + status);
+      // Optionally parse the `config` field if needed
+      Map<String, Object> configMap = mapper.readValue(configJson, new TypeReference<>() {});
+
+      FormatRulesDto config = mapper.convertValue(configMap, FormatRulesDto.class);
+
+      FormattingRequestDto formattingRequest =
+          new FormattingRequestDto(
+              config, messageMap.get("language").toString(), messageMap.get("version").toString());
+
+      parserService.format(snippetId, formattingRequest);
     } catch (Exception e) {
       System.err.println("Error deserializing message: " + e.getMessage());
     }
@@ -53,7 +64,7 @@ public class TestResultLintEventConsumer extends RedisStreamConsumer<String> {
   protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>>
       options() {
     return StreamReceiver.StreamReceiverOptions.builder()
-        .pollTimeout(Duration.ofSeconds(1))
+        .pollTimeout(Duration.ofSeconds(2))
         .targetType(String.class)
         .build();
   }
