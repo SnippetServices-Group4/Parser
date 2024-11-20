@@ -1,7 +1,6 @@
 package com.services.group4.parser.services;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,14 +15,8 @@ public class SnippetService {
     this.blobStorageService = blobStorageService;
   }
 
-  public String getSnippet(Long snippetId) {
-    Optional<String> content = blobStorageService.getSnippet(container, snippetId);
-
-    if (content.isEmpty()) {
-      throw new NoSuchElementException("Snippet content not found");
-    }
-
-    return content.get();
+  public Optional<String> getSnippet(Long snippetId) {
+    return blobStorageService.getSnippet(container, snippetId);
   }
 
   public void setEnv() {
