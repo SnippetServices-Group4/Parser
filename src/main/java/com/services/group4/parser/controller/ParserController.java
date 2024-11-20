@@ -54,9 +54,9 @@ public class ParserController {
     return parserService.validate(snippetId, request);
   }
 
-  @PostMapping("/runTest")
-  public ResponseEntity<ResponseDto<TestResponseDto>> testSnippet(@RequestBody TestRequestDto request) {
-    return parserService.runTest(request);
+  @PostMapping("/runTest/{snippetId}")
+  public ResponseEntity<ResponseDto<TestResponseDto>> testSnippet(@RequestBody TestRequestDto request, @PathVariable Long snippetId) {
+    return parserService.runTest(request, snippetId);
   }
 
   @GetMapping("/setEnv")

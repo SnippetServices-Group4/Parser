@@ -93,8 +93,8 @@ public class ParserService {
     }
   }
 
-  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(TestRequestDto request) {
-    Optional<String> snippet = snippetService.getSnippet(request.getSnippetId());
+  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(TestRequestDto request, Long snippetId) {
+    Optional<String> snippet = snippetService.getSnippet(snippetId);
 
     if (snippet.isEmpty()) {
       return FullResponse.create("Snippet not found", "executedTest", null, HttpStatus.NOT_FOUND);
@@ -115,7 +115,7 @@ public class ParserService {
       boolean success = testOutput.getListString().equals(request.getOutputs());
 
       return FullResponse.create("Test ran successfully", "executedTest",
-              new TestResponseDto(request.getSnippetId(), request.getTestId(), success ? TestState.PASSED : TestState.FAILED), HttpStatus.OK);
+              new TestResponseDto(snippetId, request.getTestId(), success ? TestState.PASSED : TestState.FAILED), HttpStatus.OK);
     }
     catch (Exception e) {
       return FullResponse.create("Something went wrong when executing the tests", "executedTest", null, HttpStatus.INTERNAL_SERVER_ERROR);

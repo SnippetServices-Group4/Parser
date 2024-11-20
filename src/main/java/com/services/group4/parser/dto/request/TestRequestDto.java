@@ -17,7 +17,4 @@ public class TestRequestDto extends ProcessingRequestDto {
     private List<String> inputs;
 
     private List<String> outputs;
-
-    @NotNull(message = "Snippet id required")
-    private Long snippetId;
 }
