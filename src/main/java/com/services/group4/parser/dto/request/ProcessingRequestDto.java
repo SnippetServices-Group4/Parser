@@ -18,7 +18,7 @@ public class ProcessingRequestDto {
   public ProcessingRequestDto() {}
 
   public ProcessingRequestDto(String language, String version) {
-        this.language = language;
-        this.version = version;
+    this.language = language;
+    this.version = version;
   }
 }

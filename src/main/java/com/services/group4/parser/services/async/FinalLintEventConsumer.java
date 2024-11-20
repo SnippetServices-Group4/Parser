@@ -3,12 +3,11 @@ package com.services.group4.parser.services.async;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.parser.dto.request.LintRulesDto;
+import com.services.group4.parser.dto.request.LintingRequestDto;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import com.services.group4.parser.dto.request.LintingRequestDto;
 import com.services.group4.parser.dto.result.LintingResultDto;
 import com.services.group4.parser.dto.result.ResponseDto;
 import com.services.group4.parser.services.ParserService;
@@ -68,7 +67,9 @@ public class FinalLintEventConsumer extends RedisStreamConsumer<String> {
       LintRulesDto config = mapper.convertValue(configMap, LintRulesDto.class);
       System.out.println("Parsed Config as DTO: " + config);
 
-      LintingRequestDto lintingRequest = new LintingRequestDto(config, messageMap.get("language").toString(), messageMap.get("version").toString());
+      LintingRequestDto lintingRequest =
+          new LintingRequestDto(
+              config, messageMap.get("language").toString(), messageMap.get("version").toString());
       System.out.println("Linting Request: " + lintingRequest);
 
       //      TODO: Call ParserService to lint the snippet
