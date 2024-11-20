@@ -1,6 +1,7 @@
 package com.services.group4.parser.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -56,7 +57,7 @@ public class ParserServiceTest {
   @Test
   public void shouldNotExecuteSnippet() {
     ProcessingRequestDto request = TestDtoProvider.getProcessingRequestDto();
-    when(snippetService.getSnippet(1L)).thenReturn(Optional.empty());
+    when(snippetService.getSnippet(any())).thenReturn(Optional.empty());
 
     ResponseEntity<ResponseDto<ExecuteResultDto>> result = parserService.execute(1L, request);
     assertEquals(HttpStatusCode.valueOf(404), result.getStatusCode());

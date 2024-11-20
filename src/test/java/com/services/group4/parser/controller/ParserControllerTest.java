@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.parser.DotenvConfig;
+import com.services.group4.parser.common.ValidationState;
 import com.services.group4.parser.common.response.DataTuple;
 import com.services.group4.parser.dto.request.FormatRulesDto;
 import com.services.group4.parser.dto.request.FormattingRequestDto;
@@ -46,7 +47,7 @@ public class ParserControllerTest {
 
   @Test
   void shouldExecuteSnippet() throws Exception {
-    ProcessingRequestDto request = new ProcessingRequestDto("printscript", "1.1");
+    ProcessingRequestDto request = new ProcessingRequestDto("printscript", "1.1", "");
     String requestJson = objectMapper.writeValueAsString(request);
 
     when(parserService.execute(1L, request))
@@ -99,13 +100,15 @@ public class ParserControllerTest {
 
   @Test
   void shouldValidateSnippet() throws Exception {
-    ProcessingRequestDto request = new ProcessingRequestDto("printscript", "1.1");
-    when(parserService.validate(1L, request))
+    ProcessingRequestDto request = new ProcessingRequestDto("printscript", "1.1", "content");
+    when(parserService.validate(request))
         .thenReturn(
-            new ResponseEntity<>(new ResponseDto<>("", new DataTuple<>("", null)), HttpStatus.OK));
+            new ResponseEntity<>(
+                new ResponseDto<>("a", new DataTuple<>("a", ValidationState.VALID)),
+                HttpStatus.OK));
     mockMvc
         .perform(
-            post(BASE_URL + "/validate/1")
+            post(BASE_URL + "/validate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk());
