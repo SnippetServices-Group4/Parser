@@ -1,7 +1,7 @@
 package com.services.group4.parser.controller;
 
-import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.common.ValidationState;
+import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.dto.request.LintingRequestDto;
 import com.services.group4.parser.dto.request.ProcessingRequestDto;
 import com.services.group4.parser.dto.request.TestRequestDto;
@@ -54,7 +54,7 @@ public class ParserController {
 
   @PostMapping("/validate")
   public ResponseEntity<ResponseDto<ValidationState>> analyze(
-          @RequestBody ProcessingRequestDto request) {
+      @RequestBody ProcessingRequestDto request) {
     return parserService.validate(request);
   }
 

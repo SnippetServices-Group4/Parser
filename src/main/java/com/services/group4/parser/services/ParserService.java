@@ -37,15 +37,6 @@ import output.OutputResult;
 import output.OutputString;
 import runner.Runner;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Queue;
-
 @Service
 public class ParserService {
   List<Language> languages;
@@ -69,8 +60,9 @@ public class ParserService {
     }
   }
 
-  //TODO: execute should switch on language
-  public ResponseEntity<ResponseDto<ExecuteResultDto>> execute(Long snippetId, ProcessingRequestDto request) {
+  // TODO: execute should switch on language
+  public ResponseEntity<ResponseDto<ExecuteResultDto>> execute(
+      Long snippetId, ProcessingRequestDto request) {
     String language = request.language().toLowerCase();
     String version = request.version();
 
@@ -78,7 +70,7 @@ public class ParserService {
 
     Optional<String> snippet = snippetService.getSnippet(snippetId);
     return snippet
-        .map(s -> getExecuteResultDto(s, version, List.of()))
+        .map(s -> getExecuteResultDto(snippetId, s, version, List.of()))
         .orElseGet(
             () ->
                 FullResponse.create(
@@ -87,7 +79,7 @@ public class ParserService {
 
   @NotNull
   private static ResponseEntity<ResponseDto<ExecuteResultDto>> getExecuteResultDto(
-      String snippet, String version, List<String> inputs) {
+      Long snippetId, String snippet, String version, List<String> inputs) {
     Runner runner = new Runner();
 
     InputStream stream = new ByteArrayInputStream(snippet.getBytes());
@@ -102,7 +94,7 @@ public class ParserService {
       return FullResponse.create(
           "Snippet executed successfully",
           "executeResult",
-          new ExecuteResultDto(printLog.getResult(), errorLog.getResult()),
+          new ExecuteResultDto(snippetId, printLog.getResult(), errorLog.getResult()),
           HttpStatus.OK);
     } catch (Exception e) {
       return FullResponse.create(
@@ -135,9 +127,7 @@ public class ParserService {
           "Test ran successfully",
           "executedTest",
           new TestResponseDto(
-              request.snippetId(),
-              request.testId(),
-              success ? TestState.PASSED : TestState.FAILED),
+              request.snippetId(), request.testId(), success ? TestState.PASSED : TestState.FAILED),
           HttpStatus.OK);
     } catch (Exception e) {
       return FullResponse.create(
@@ -170,7 +160,7 @@ public class ParserService {
       return FullResponse.create(
           "Snippet formatting executed successfully",
           "formatResult",
-          new FormattingResultDto(output, language, version, rules),
+          new FormattingResultDto(snippetId, output, language, version, rules),
           HttpStatus.OK);
     } catch (Exception e) {
       return FullResponse.create(
@@ -226,7 +216,6 @@ public class ParserService {
     return output;
   }
 
-  // TODO: ARREGLAR EL TEST
   public ResponseEntity<ResponseDto<ValidationState>> validate(ProcessingRequestDto request) {
     String language = request.language().toLowerCase();
     String version = request.version();
@@ -234,11 +223,6 @@ public class ParserService {
     validateLanguage(language, version);
 
     String content = request.content();
-
-    // TODO: chequear si realmente es necesario, si el content es vacío, el runner no creo q deba de lanzar una excepción
-    if (content.isEmpty()) {
-      return FullResponse.create("Snippet not found", "validationResult", null, HttpStatus.NOT_FOUND);
-    }
 
     Runner runner = new Runner();
     InputStream stream = new ByteArrayInputStream(content.getBytes());
@@ -254,7 +238,7 @@ public class ParserService {
       report = e.getMessage();
     }
 
-    return FullResponse.create("Validation executed " + report, "validationResult", state, HttpStatus.OK);
+    return FullResponse.create(
+        "Validation executed: " + report, "validationResult", state, HttpStatus.OK);
   }
 }
-
