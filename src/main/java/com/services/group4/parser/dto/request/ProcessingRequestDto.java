@@ -14,4 +14,11 @@ public class ProcessingRequestDto {
 
   @NotNull(message = "The language is required")
   private String language;
+
+  public ProcessingRequestDto() {}
+
+  public ProcessingRequestDto(String language, String version) {
+        this.language = language;
+        this.version = version;
+  }
 }

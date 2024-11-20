@@ -66,11 +66,7 @@ public class ParserService {
     validateLanguage(language, version);
 
     Optional<String> snippet = snippetService.getSnippet(snippetId);
-      return snippet.map(s -> getExecuteResultDto(s, version)).orElseGet(() -> FullResponse.create("Snippet not found", "executeResult", null, HttpStatus.NOT_FOUND));
-  }
-
-  private static ResponseEntity<ResponseDto<ExecuteResultDto>> getExecuteResultDto(String snippet, String version) {
-    return getExecuteResultDto(snippet, version, List.of());
+      return snippet.map(s -> getExecuteResultDto(s, version, List.of())).orElseGet(() -> FullResponse.create("Snippet not found", "executeResult", null, HttpStatus.NOT_FOUND));
   }
 
   @NotNull

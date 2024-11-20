@@ -15,7 +15,12 @@ import com.services.group4.parser.services.SnippetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/parsers")
@@ -53,12 +58,14 @@ public class ParserController {
           @PathVariable Long snippetId, @RequestBody ProcessingRequestDto request) {
     return parserService.validate(snippetId, request);
   }
-
   @PostMapping("/runTest")
   public ResponseEntity<ResponseDto<TestResponseDto>> testSnippet(@RequestBody TestRequestDto request) {
     return parserService.runTest(request);
   }
 
+
+  //TODO: remove this endpoint
+  //Testing purposes only
   @GetMapping("/setEnv")
   public ResponseEntity<String> setEnv() {
     snippetService.setEnv();
