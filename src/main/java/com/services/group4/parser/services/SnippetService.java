@@ -2,9 +2,12 @@ package com.services.group4.parser.services;
 
 import java.util.List;
 import java.util.Optional;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class SnippetService {
   private final BlobStorageService blobStorageService;
@@ -16,6 +19,7 @@ public class SnippetService {
   }
 
   public Optional<String> getSnippet(Long snippetId) {
+    log.info("Getting snippet with id: {} from bucket", snippetId);
     return blobStorageService.getSnippet(container, snippetId);
   }
 
