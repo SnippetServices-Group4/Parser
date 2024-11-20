@@ -19,6 +19,14 @@ import com.services.group4.parser.services.adapter.LintConfigAdapter;
 import com.services.group4.parser.services.utils.OutputListString;
 import input.InputHandler;
 import input.InputQueue;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Queue;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +37,6 @@ import output.OutputReport;
 import output.OutputResult;
 import output.OutputString;
 import runner.Runner;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Queue;
 
 @Slf4j
 @Service
@@ -68,7 +67,7 @@ public class ParserService {
 
   // TODO: execute should switch on language
   public ResponseEntity<ResponseDto<ExecuteResultDto>> execute(
-    Long snippetId, ProcessingRequestDto request) {
+      Long snippetId, ProcessingRequestDto request) {
     String language = request.language().toLowerCase();
     String version = request.version();
 
@@ -114,7 +113,8 @@ public class ParserService {
     }
   }
 
-  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(TestRequestDto request, Long snippetId) {
+  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(
+      TestRequestDto request, Long snippetId) {
     Optional<String> snippet = snippetService.getSnippet(snippetId);
 
     if (snippet.isEmpty()) {
@@ -130,17 +130,24 @@ public class ParserService {
     Queue<String> inputQueue = new LinkedList<>(request.inputs());
     InputHandler inputHandler = new InputQueue(inputQueue);
 
-    log.info("Trying to run tests for snippet with id: {}", request.snippetId());
+    log.info("Trying to run tests for snippet with id: {}", snippetId);
     try {
       runner.execute(stream, request.version(), testOutput, errorOutput, inputHandler);
 
       boolean success = testOutput.getListString().equals(request.outputs());
 
-      return FullResponse.create("Test ran successfully", "executedTest",
-              new TestResponseDto(snippetId, request.getTestId(), success ? TestState.PASSED : TestState.FAILED), HttpStatus.OK);
-    }
-    catch (Exception e) {
-      return FullResponse.create("Something went wrong when executing the tests", "executedTest", null, HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create(
+          "Test ran successfully",
+          "executedTest",
+          new TestResponseDto(
+              snippetId, request.testId(), success ? TestState.PASSED : TestState.FAILED),
+          HttpStatus.OK);
+    } catch (Exception e) {
+      return FullResponse.create(
+          "Something went wrong when executing the tests",
+          "executedTest",
+          null,
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -164,7 +171,8 @@ public class ParserService {
       log.info("Trying to format snippet with id: {}", snippetId);
       String output = format(snippet.get(), version, rules);
       log.info("Snippet formatted successfully: {}", snippetId);
-      log.debug("Formatted snippet with id {} using rules: {}, version: {}", snippetId, rules, version);
+      log.debug(
+          "Formatted snippet with id {} using rules: {}, version: {}", snippetId, rules, version);
 
       log.info("Trying to save formatted snippet in bucket");
       bucketClient.saveSnippet(container, snippetId, output);
