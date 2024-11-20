@@ -3,11 +3,10 @@ package com.services.group4.parser.services.async;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.services.group4.parser.dto.request.FormatRulesDto;
-import java.time.Duration;
-import java.util.Map;
-
 import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.services.ParserService;
+import java.time.Duration;
+import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,9 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
       FormatRulesDto config = mapper.convertValue(configMap, FormatRulesDto.class);
       System.out.println("Parsed Config as DTO: " + config);
 
-      FormattingRequestDto formattingRequest = new FormattingRequestDto(config, messageMap.get("language").toString(), messageMap.get("version").toString());
+      FormattingRequestDto formattingRequest =
+          new FormattingRequestDto(
+              config, messageMap.get("language").toString(), messageMap.get("version").toString());
       System.out.println("Formatting Request: " + formattingRequest);
 
       //       TODO: Call ParserService to format the snippet

@@ -7,16 +7,17 @@ import lombok.Getter;
 @Generated
 @Getter
 public class LintingRequestDto {
-    @NotNull(message = "The version is required")
-    private LintRulesDto lintRules;
-    private String language;
-    private String version;
+  @NotNull(message = "The version is required")
+  private LintRulesDto lintRules;
 
-    public LintingRequestDto() {}
+  private String language;
+  private String version;
 
-    public LintingRequestDto(LintRulesDto lintRules, String language, String version) {
-        this.lintRules = lintRules;
-        this.language = language;
-        this.version = version;
-    }
+  public LintingRequestDto() {}
+
+  public LintingRequestDto(LintRulesDto lintRules, String language, String version) {
+    this.lintRules = lintRules;
+    this.language = language;
+    this.version = version;
+  }
 }
