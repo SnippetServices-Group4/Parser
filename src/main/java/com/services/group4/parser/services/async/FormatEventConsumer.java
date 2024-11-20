@@ -24,7 +24,7 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
 
   @Autowired
   public FormatEventConsumer(
-      @Value("${stream.initial.format.key}") String streamKey,
+      @Value("${stream.final.format.key}") String streamKey,
       @Value("${groups.format}") String groupId,
       @NotNull RedisTemplate<String, String> redis,
       @NotNull ParserService parserService) {
