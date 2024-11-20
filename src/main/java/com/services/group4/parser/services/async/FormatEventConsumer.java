@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.util.Map;
 
 import com.services.group4.parser.dto.request.FormattingRequestDto;
+import com.services.group4.parser.services.ParserService;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class FormatEventConsumer extends RedisStreamConsumer<String> {
   private final ObjectMapper mapper;
+  private final ParserService parserService;
 
   @Autowired
   public FormatEventConsumer(
       @Value("${stream.format.key}") String streamKey,
       @Value("${groups.format}") String groupId,
-      @NotNull RedisTemplate<String, String> redis) {
+      @NotNull RedisTemplate<String, String> redis,
+      @NotNull ParserService parserService) {
     super(streamKey, groupId, redis);
     mapper = new ObjectMapper();
+    this.parserService = parserService;
   }
 
   @Override
@@ -56,6 +60,7 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
       System.out.println("Formatting Request: " + formattingRequest);
 
       //       TODO: Call ParserService to format the snippet
+      parserService.format(snippetId, formattingRequest);
     } catch (Exception e) {
       System.err.println("Error deserializing message: " + e.getMessage());
     }
