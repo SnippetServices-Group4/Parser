@@ -135,8 +135,8 @@ public class ParserService {
           "Test ran successfully",
           "executedTest",
           new TestResponseDto(
-              request.getSnippetId(),
-              request.getTestId(),
+              request.snippetId(),
+              request.testId(),
               success ? TestState.PASSED : TestState.FAILED),
           HttpStatus.OK);
     } catch (Exception e) {
@@ -226,6 +226,7 @@ public class ParserService {
     return output;
   }
 
+  // TODO: ARREGLAR EL TEST
   public ResponseEntity<ResponseDto<ValidationState>> validate(ProcessingRequestDto request) {
     String language = request.language().toLowerCase();
     String version = request.version();
