@@ -10,5 +10,4 @@ public record TestRequestDto(
     List<String> inputs,
     List<String> outputs,
     String version,
-    String language,
-    @NotNull(message = "Snippet id required") Long snippetId) {}
+    String language) {}
