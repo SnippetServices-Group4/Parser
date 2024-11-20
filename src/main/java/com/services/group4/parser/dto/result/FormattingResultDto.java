@@ -9,25 +9,30 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FormattingResultDto {
-    @NotNull(message = "The formatted code is required")
-    private String formattedCode;
+  @NotNull(message = "The snippet id is required")
+  private Long snippetId;
 
-    @NotNull(message = "The language is required")
-    private String language;
+  @NotNull(message = "The formatted code is required")
+  private String formattedCode;
 
-    @NotNull(message = "The version is required")
-    private String version;
+  @NotNull(message = "The language is required")
+  private String language;
 
-    //TODO: this should not be returned
-    @NotNull(message = "The rules used are required")
-    private String rulesUsed;
+  @NotNull(message = "The version is required")
+  private String version;
 
-    public FormattingResultDto() {}
+  // TODO: this should not be returned
+  @NotNull(message = "The rules used are required")
+  private String rulesUsed;
 
-    public FormattingResultDto(String formattedCode, String language, String version, String rulesUsed) {
-        this.formattedCode = formattedCode;
-        this.language = language;
-        this.version = version;
-        this.rulesUsed = rulesUsed;
-    }
+  public FormattingResultDto() {}
+
+  public FormattingResultDto(
+      Long snippetId, String formattedCode, String language, String version, String rulesUsed) {
+    this.snippetId = snippetId;
+    this.formattedCode = formattedCode;
+    this.language = language;
+    this.version = version;
+    this.rulesUsed = rulesUsed;
+  }
 }

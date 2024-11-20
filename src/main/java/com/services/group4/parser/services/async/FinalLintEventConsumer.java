@@ -2,11 +2,16 @@ package com.services.group4.parser.services.async;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.services.group4.parser.dto.request.FormatRulesDto;
-import com.services.group4.parser.dto.request.FormattingRequestDto;
+import com.services.group4.parser.dto.request.LintRulesDto;
+import com.services.group4.parser.dto.request.LintingRequestDto;
+import com.services.group4.parser.dto.result.LintingResultDto;
+import com.services.group4.parser.dto.result.ResponseDto;
 import com.services.group4.parser.services.ParserService;
+import com.services.group4.parser.services.utils.LintStatus;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.austral.ingsis.redis.RedisStreamConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,22 +19,29 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.stream.StreamReceiver;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import report.Report;
 
 @Component
-public class FormatEventConsumer extends RedisStreamConsumer<String> {
+public class FinalLintEventConsumer extends RedisStreamConsumer<String> {
   private final ObjectMapper mapper;
   private final ParserService parserService;
+  private final ResultLintEventProducer publisher;
 
   @Autowired
-  public FormatEventConsumer(
-      @Value("${stream.final.format.key}") String streamKey,
-      @Value("${groups.format}") String groupId,
+  public FinalLintEventConsumer(
+      @Value("${stream.final.lint.key}") String streamKey,
+      @Value("${groups.lint}") String groupId,
       @NotNull RedisTemplate<String, String> redis,
-      @NotNull ParserService parserService) {
+      @NotNull ParserService parserService,
+      @NotNull ResultLintEventProducer publisher) {
     super(streamKey, groupId, redis);
     mapper = new ObjectMapper();
     this.parserService = parserService;
+    this.publisher = publisher;
   }
 
   @Override
@@ -44,7 +56,7 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
 
       // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
-      String configJson = (String) messageMap.get("formatRules");
+      String configJson = (String) messageMap.get("lintRules");
       System.out.println("SnippetId: " + snippetId);
       System.out.println("Config JSON String: " + configJson);
 
@@ -52,16 +64,29 @@ public class FormatEventConsumer extends RedisStreamConsumer<String> {
       Map<String, Object> configMap = mapper.readValue(configJson, new TypeReference<>() {});
       System.out.println("Parsed Config as Map: " + configMap);
 
-      FormatRulesDto config = mapper.convertValue(configMap, FormatRulesDto.class);
+      LintRulesDto config = mapper.convertValue(configMap, LintRulesDto.class);
       System.out.println("Parsed Config as DTO: " + config);
 
-      FormattingRequestDto formattingRequest =
-          new FormattingRequestDto(
+      LintingRequestDto lintingRequest =
+          new LintingRequestDto(
               config, messageMap.get("language").toString(), messageMap.get("version").toString());
-      System.out.println("Formatting Request: " + formattingRequest);
+      System.out.println("Linting Request: " + lintingRequest);
 
-      //       TODO: Call ParserService to format the snippet
-      parserService.format(snippetId, formattingRequest);
+      //      TODO: Call ParserService to lint the snippet
+      ResponseEntity<ResponseDto<LintingResultDto>> result =
+          parserService.lint(snippetId, lintingRequest);
+      HttpStatusCode status = result.getStatusCode();
+
+      if (status == HttpStatus.OK) {
+        List<Report> reports = Objects.requireNonNull(result.getBody()).data().data().getReport();
+
+        LintStatus lintStatus = reports.isEmpty() ? LintStatus.COMPLIANT : LintStatus.NON_COMPLIANT;
+
+        publisher.publishEvent(snippetId, lintStatus, reports);
+      } else {
+        System.out.println("Linting failed");
+      }
+
     } catch (Exception e) {
       System.err.println("Error deserializing message: " + e.getMessage());
     }

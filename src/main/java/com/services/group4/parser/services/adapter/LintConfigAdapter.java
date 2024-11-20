@@ -45,7 +45,6 @@ public class LintConfigAdapter {
   }
 
   private JsonObject getCallExpressionConfig(LintRulesDto config) {
-    JsonObject callExpression = new JsonObject();
     JsonArray basicArgs = new JsonArray();
     basicArgs.add("IDENTIFIER");
     basicArgs.add("STRING_LITERAL");
@@ -53,6 +52,8 @@ public class LintConfigAdapter {
     basicArgs.add("BOOLEAN_LITERAL");
 
     JsonObject printlnArguments = getArguments(config.isPrintLnAcceptsExpressions(), basicArgs);
+
+    JsonObject callExpression = new JsonObject();
     callExpression.add("println", printlnArguments);
 
     JsonObject readInputArguments = getArguments(config.isReadInputAcceptsExpressions(), basicArgs);
@@ -62,11 +63,11 @@ public class LintConfigAdapter {
     return callExpression;
   }
 
-  private JsonObject getArguments(boolean isStrict, JsonArray basicArgs) {
+  private JsonObject getArguments(boolean acceptsExpressions, JsonArray basicArgs) {
     JsonObject args = new JsonObject();
     JsonArray copyBasicArgs = basicArgs.deepCopy();
 
-    if (!isStrict) {
+    if (acceptsExpressions) {
       copyBasicArgs.add("CALL_EXPRESSION");
       copyBasicArgs.add("BINARY_EXPRESSION");
     }

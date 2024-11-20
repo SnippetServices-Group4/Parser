@@ -2,7 +2,7 @@ package com.services.group4.parser.services.async;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.services.group4.parser.dto.request.LintRulesDto;
+import com.services.group4.parser.services.utils.LintStatus;
 import java.time.Duration;
 import java.util.Map;
 import org.austral.ingsis.redis.RedisStreamConsumer;
@@ -15,16 +15,17 @@ import org.springframework.data.redis.stream.StreamReceiver;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LintEventConsumer extends RedisStreamConsumer<String> {
+public class TestResultLintEventConsumer extends RedisStreamConsumer<String> {
   private final ObjectMapper mapper;
 
   @Autowired
-  public LintEventConsumer(
-      @Value("${stream.lint.key}") String streamKey,
-      @Value("${groups.lint}") String groupId,
-      @NotNull RedisTemplate<String, String> redis) {
+  public TestResultLintEventConsumer(
+      @Value("${stream.result.lint.key}") String streamKey,
+      @Value("test-lint-result-group") String groupId,
+      @NotNull RedisTemplate<String, String> redis,
+      @NotNull ObjectMapper mapper) {
     super(streamKey, groupId, redis);
-    mapper = new ObjectMapper();
+    this.mapper = mapper;
   }
 
   @Override
@@ -39,18 +40,10 @@ public class LintEventConsumer extends RedisStreamConsumer<String> {
 
       // Access specific fields from the Map
       Long snippetId = (Long) ((Integer) messageMap.get("snippetId")).longValue();
-      String configJson = (String) messageMap.get("config");
+      LintStatus status = LintStatus.valueOf(messageMap.get("status").toString());
+
       System.out.println("SnippetId: " + snippetId);
-      System.out.println("Config JSON String: " + configJson);
-
-      // Optionally parse the `config` field if needed
-      Map<String, Object> configMap = mapper.readValue(configJson, new TypeReference<>() {});
-      System.out.println("Parsed Config as Map: " + configMap);
-
-      LintRulesDto config = mapper.convertValue(configMap, LintRulesDto.class);
-      System.out.println("Parsed Config as DTO: " + config);
-
-      //      TODO: Call ParserService to lint the snippet
+      System.out.println("Status: " + status);
     } catch (Exception e) {
       System.err.println("Error deserializing message: " + e.getMessage());
     }

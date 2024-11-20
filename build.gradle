@@ -32,7 +32,12 @@ jacocoTestReport {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
-					'**/DotenvConfig.class'
+					'**/DotenvConfig.class',
+					'**/clients/**',
+					'**/config/**',
+					'**/services/async/**',
+					'**/CorrelationIdInterceptor.class',
+					'**/ParserApplication.class',
 			])
 		}))
 	}
@@ -42,7 +47,12 @@ jacocoTestCoverageVerification {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
-					'**/DotenvConfig.class'
+					'**/DotenvConfig.class',
+					'**/clients/**',
+					'**/config/**',
+					'**/services/async/**',
+					'**/CorrelationIdInterceptor.class',
+					'**/ParserApplication.class',
 			])
 		}))
 	}

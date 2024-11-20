@@ -5,17 +5,21 @@ import com.services.group4.parser.common.Language;
 import com.services.group4.parser.common.TestState;
 import com.services.group4.parser.common.ValidationState;
 import com.services.group4.parser.common.response.FullResponse;
-import com.services.group4.parser.dto.ValidateResultDto;
 import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.dto.request.LintingRequestDto;
 import com.services.group4.parser.dto.request.ProcessingRequestDto;
 import com.services.group4.parser.dto.request.TestRequestDto;
-import com.services.group4.parser.dto.result.*;
+import com.services.group4.parser.dto.result.ExecuteResultDto;
+import com.services.group4.parser.dto.result.FormattingResultDto;
+import com.services.group4.parser.dto.result.LintingResultDto;
+import com.services.group4.parser.dto.result.ResponseDto;
+import com.services.group4.parser.dto.result.TestResponseDto;
 import com.services.group4.parser.services.adapter.FormatConfigAdapter;
 import com.services.group4.parser.services.adapter.LintConfigAdapter;
 import com.services.group4.parser.services.utils.OutputListString;
 import input.InputHandler;
 import input.InputQueue;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +39,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Queue;
 
+@Slf4j
 @Service
 public class ParserService {
   List<Language> languages;
@@ -44,7 +49,7 @@ public class ParserService {
 
   @Autowired
   public ParserService(SnippetService snippetService, BucketClient bucketClient) {
-    //TODO: move to another class
+    // TODO: move to another class
     List<String> versions = List.of("1.0", "1.1");
     this.languages = List.of(new Language("printscript", versions));
     this.snippetService = snippetService;
@@ -52,29 +57,35 @@ public class ParserService {
   }
 
   private void validateLanguage(String language, String version) {
+    log.info("Validating snippet language and version: {}", language);
     if (languages.stream()
-            .noneMatch(l -> l.getLangName().equals(language) && l.getVersion().contains(version))) {
+        .noneMatch(l -> l.getLangName().equals(language) && l.getVersion().contains(version))) {
+      log.info("Language or version not supported: {} , {}", language, version);
       throw new NoSuchElementException("Language not supported");
     }
+    log.info("Language and version validated: {} {}", language, version);
   }
 
-  //TODO: execute should switch on language
-  public ResponseEntity<ResponseDto<ExecuteResultDto>> execute(Long snippetId, ProcessingRequestDto request) {
-    String language = request.getLanguage().toLowerCase();
-    String version = request.getVersion();
+  // TODO: execute should switch on language
+  public ResponseEntity<ResponseDto<ExecuteResultDto>> execute(
+    Long snippetId, ProcessingRequestDto request) {
+    String language = request.language().toLowerCase();
+    String version = request.version();
 
     validateLanguage(language, version);
 
     Optional<String> snippet = snippetService.getSnippet(snippetId);
-      return snippet.map(s -> getExecuteResultDto(s, version)).orElseGet(() -> FullResponse.create("Snippet not found", "executeResult", null, HttpStatus.NOT_FOUND));
-  }
-
-  private static ResponseEntity<ResponseDto<ExecuteResultDto>> getExecuteResultDto(String snippet, String version) {
-    return getExecuteResultDto(snippet, version, List.of());
+    return snippet
+        .map(s -> getExecuteResultDto(snippetId, s, version, List.of()))
+        .orElseGet(
+            () ->
+                FullResponse.create(
+                    "Snippet not found", "executeResult", null, HttpStatus.NOT_FOUND));
   }
 
   @NotNull
-  private static ResponseEntity<ResponseDto<ExecuteResultDto>> getExecuteResultDto(String snippet, String version, List<String> inputs) {
+  private static ResponseEntity<ResponseDto<ExecuteResultDto>> getExecuteResultDto(
+      Long snippetId, String snippet, String version, List<String> inputs) {
     Runner runner = new Runner();
 
     InputStream stream = new ByteArrayInputStream(snippet.getBytes());
@@ -85,11 +96,21 @@ public class ParserService {
     InputHandler inputHandler = new InputQueue(inputQueue);
 
     try {
+      log.info("Executing snippet with id: {}", snippetId);
       runner.execute(stream, version, printLog, errorLog, inputHandler);
-      return FullResponse.create("Snippet executed successfully", "executeResult", new ExecuteResultDto(printLog.getResult(), errorLog.getResult()), HttpStatus.OK);
-    }
-    catch (Exception e) {
-      return FullResponse.create("Snippet execution failed", "executeResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
+      log.info("Snippet executed successfully: {}", snippetId);
+      log.debug("Print log: {}, Error log: {}", printLog.getResult(), errorLog.getResult());
+
+      return FullResponse.create(
+          "Snippet executed successfully",
+          "executeResult",
+          new ExecuteResultDto(snippetId, printLog.getResult(), errorLog.getResult()),
+          HttpStatus.OK);
+    } catch (Exception e) {
+      log.error("Snippet execution failed: {}", snippetId);
+      log.debug("Error log: {}", e.getMessage());
+      return FullResponse.create(
+          "Snippet execution failed", "executeResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -106,13 +127,14 @@ public class ParserService {
 
     OutputListString testOutput = new OutputListString();
     OutputResult<String> errorOutput = new OutputString();
-    Queue<String> inputQueue = new LinkedList<>(request.getInputs());
+    Queue<String> inputQueue = new LinkedList<>(request.inputs());
     InputHandler inputHandler = new InputQueue(inputQueue);
 
+    log.info("Trying to run tests for snippet with id: {}", request.snippetId());
     try {
-      runner.execute(stream, request.getVersion(), testOutput, errorOutput, inputHandler);
+      runner.execute(stream, request.version(), testOutput, errorOutput, inputHandler);
 
-      boolean success = testOutput.getListString().equals(request.getOutputs());
+      boolean success = testOutput.getListString().equals(request.outputs());
 
       return FullResponse.create("Test ran successfully", "executedTest",
               new TestResponseDto(snippetId, request.getTestId(), success ? TestState.PASSED : TestState.FAILED), HttpStatus.OK);
@@ -122,7 +144,8 @@ public class ParserService {
     }
   }
 
-  public ResponseEntity<ResponseDto<FormattingResultDto>> format(Long snippetId, FormattingRequestDto request) {
+  public ResponseEntity<ResponseDto<FormattingResultDto>> format(
+      Long snippetId, FormattingRequestDto request) {
     String language = request.getLanguage().toLowerCase();
     String version = request.getVersion();
 
@@ -138,12 +161,24 @@ public class ParserService {
     String rules = formatConfigAdapter.adaptFormatConfig(request.getFormatRules());
 
     try {
+      log.info("Trying to format snippet with id: {}", snippetId);
       String output = format(snippet.get(), version, rules);
+      log.info("Snippet formatted successfully: {}", snippetId);
+      log.debug("Formatted snippet with id {} using rules: {}, version: {}", snippetId, rules, version);
+
+      log.info("Trying to save formatted snippet in bucket");
       bucketClient.saveSnippet(container, snippetId, output);
-      return FullResponse.create("Snippet formatting executed successfully", "formatResult", new FormattingResultDto(output, language, version, rules), HttpStatus.OK);
-    }
-    catch (Exception e) {
-      return FullResponse.create("Snippet formatting failed", "formatResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
+      log.info("Formatted snippet successfully saved in bucket");
+      return FullResponse.create(
+          "Snippet formatting executed successfully",
+          "formatResult",
+          new FormattingResultDto(snippetId, output, language, version, rules),
+          HttpStatus.OK);
+    } catch (Exception e) {
+      log.error("Snippet formatting with id: {}", snippetId + "failed");
+      log.debug("Error log: {}", e.getMessage());
+      return FullResponse.create(
+          "Snippet formatting failed", "formatResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -156,7 +191,8 @@ public class ParserService {
     return output.getResult();
   }
 
-  public ResponseEntity<ResponseDto<LintingResultDto>> lint(Long snippetId, LintingRequestDto request) {
+  public ResponseEntity<ResponseDto<LintingResultDto>> lint(
+      Long snippetId, LintingRequestDto request) {
     String language = request.getLanguage().toLowerCase();
     String version = request.getVersion();
 
@@ -165,18 +201,30 @@ public class ParserService {
     Optional<String> snippet = snippetService.getSnippet(snippetId);
 
     if (snippet.isEmpty()) {
-        return FullResponse.create("Snippet not found", "lintResult", null, HttpStatus.NOT_FOUND);
+      return FullResponse.create("Snippet not found", "lintResult", null, HttpStatus.NOT_FOUND);
     }
 
     LintConfigAdapter lintConfigAdapter = new LintConfigAdapter();
     String rules = lintConfigAdapter.adaptLintConfig(request.getLintRules());
 
     try {
+      log.info("Trying to lint snippet with id: {}", snippetId);
       OutputReport report = lint(snippet.get(), version, rules);
-      return FullResponse.create("Linting executed successfully", "lintResult", new LintingResultDto(report.getFullReport().getReports(), language, version, rules), HttpStatus.OK);
-    }
-    catch (Exception e) {
-      return FullResponse.create("Linting failed", "lintResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
+      log.info("Snippet linted successfully: {}", snippetId);
+      return FullResponse.create(
+          "Linting executed successfully",
+          "lintResult",
+          new LintingResultDto(
+              snippetId, report.getFullReport().getReports(), language, version, rules),
+          HttpStatus.OK);
+    } catch (Exception e) {
+      log.error("Snippet linting with id: {}", snippetId + "failed");
+      log.debug("Error log: {}", e.getMessage());
+      return FullResponse.create(
+          "Linting failed",
+          "lintResult",
+          new LintingResultDto(snippetId, List.of(), language, version, rules),
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -190,33 +238,32 @@ public class ParserService {
     return output;
   }
 
-  public ResponseEntity<ResponseDto<ValidateResultDto>> validate(Long snippetId, ProcessingRequestDto request) {
-    String language = request.getLanguage().toLowerCase();
-    String version = request.getVersion();
+  public ResponseEntity<ResponseDto<ValidationState>> validate(ProcessingRequestDto request) {
+    String language = request.language().toLowerCase();
+    String version = request.version();
 
     validateLanguage(language, version);
 
-    Optional<String> snippet = snippetService.getSnippet(snippetId);
-
-    if (snippet.isEmpty()) {
-      return FullResponse.create("Snippet not found", "validationResult", null, HttpStatus.NOT_FOUND);
-    }
+    String content = request.content();
 
     Runner runner = new Runner();
-    InputStream stream = new ByteArrayInputStream(snippet.get().getBytes());
+    InputStream stream = new ByteArrayInputStream(content.getBytes());
     ValidationState state;
     String report;
 
+    log.info("Trying to validate snippet with id");
     try {
       runner.validate(stream, version);
       state = ValidationState.VALID;
-      report = "Validation successful";
+      report = "successfully";
     } catch (Exception e) {
       state = ValidationState.INVALID;
       report = e.getMessage();
+      log.debug("Snippet validation failed: {}", e.getMessage());
     }
 
-    return FullResponse.create("Validation executed", "validationResult", new ValidateResultDto(report, state, language, version), HttpStatus.OK);
+    log.info("Snippet validated: {}", state);
+    return FullResponse.create(
+        "Validation executed: " + report, "validationResult", state, HttpStatus.OK);
   }
 }
-
