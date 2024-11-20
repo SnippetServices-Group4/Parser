@@ -63,11 +63,11 @@ public class LintConfigAdapter {
     return callExpression;
   }
 
-  private JsonObject getArguments(boolean isStrict, JsonArray basicArgs) {
+  private JsonObject getArguments(boolean acceptsExpressions, JsonArray basicArgs) {
     JsonObject args = new JsonObject();
     JsonArray copyBasicArgs = basicArgs.deepCopy();
 
-    if (!isStrict) {
+    if (acceptsExpressions) {
       copyBasicArgs.add("CALL_EXPRESSION");
       copyBasicArgs.add("BINARY_EXPRESSION");
     }
