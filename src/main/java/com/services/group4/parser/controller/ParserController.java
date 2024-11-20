@@ -1,6 +1,6 @@
 package com.services.group4.parser.controller;
 
-import com.services.group4.parser.dto.ValidateResultDto;
+import com.services.group4.parser.common.ValidationState;
 import com.services.group4.parser.dto.request.LintingRequestDto;
 import com.services.group4.parser.dto.request.ProcessingRequestDto;
 import com.services.group4.parser.dto.result.LintingResultDto;
@@ -53,11 +53,12 @@ public class ParserController {
     return parserService.lint(snippetId, request);
   }
 
-  @PostMapping("/validate/{snippetId}")
-  public ResponseEntity<ResponseDto<ValidateResultDto>> analyze(
-          @PathVariable Long snippetId, @RequestBody ProcessingRequestDto request) {
-    return parserService.validate(snippetId, request);
+  @PostMapping("/validate")
+  public ResponseEntity<ResponseDto<ValidationState>> analyze(
+          @RequestBody ProcessingRequestDto request) {
+    return parserService.validate(request);
   }
+
   @PostMapping("/runTest")
   public ResponseEntity<ResponseDto<TestResponseDto>> testSnippet(@RequestBody TestRequestDto request) {
     return parserService.runTest(request);

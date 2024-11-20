@@ -7,8 +7,8 @@ public class TestDtoProvider {
     public static ProcessingRequestDto getProcessingRequestDto() {
         String language = "printscript";
         String version = "1.1";
-
-        return new ProcessingRequestDto(language, version);
+        // TODO: agregar content
+        return new ProcessingRequestDto(language, version, "let x : number = 5;");
     }
 
     public static LintingRequestDto getAnalyzeCamelCaseRequestDto() {

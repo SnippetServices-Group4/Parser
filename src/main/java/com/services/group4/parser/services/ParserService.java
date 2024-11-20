@@ -5,7 +5,6 @@ import com.services.group4.parser.common.Language;
 import com.services.group4.parser.common.TestState;
 import com.services.group4.parser.common.ValidationState;
 import com.services.group4.parser.common.response.FullResponse;
-import com.services.group4.parser.dto.ValidateResultDto;
 import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.dto.request.LintingRequestDto;
 import com.services.group4.parser.dto.request.ProcessingRequestDto;
@@ -60,8 +59,8 @@ public class ParserService {
 
   //TODO: execute should switch on language
   public ResponseEntity<ResponseDto<ExecuteResultDto>> execute(Long snippetId, ProcessingRequestDto request) {
-    String language = request.getLanguage().toLowerCase();
-    String version = request.getVersion();
+    String language = request.language().toLowerCase();
+    String version = request.version();
 
     validateLanguage(language, version);
 
@@ -90,7 +89,7 @@ public class ParserService {
   }
 
   public ResponseEntity<ResponseDto<TestResponseDto>> runTest(TestRequestDto request) {
-    Optional<String> snippet = snippetService.getSnippet(request.getSnippetId());
+    Optional<String> snippet = snippetService.getSnippet(request.snippetId());
 
     if (snippet.isEmpty()) {
       return FullResponse.create("Snippet not found", "executedTest", null, HttpStatus.NOT_FOUND);
@@ -102,16 +101,16 @@ public class ParserService {
 
     OutputListString testOutput = new OutputListString();
     OutputResult<String> errorOutput = new OutputString();
-    Queue<String> inputQueue = new LinkedList<>(request.getInputs());
+    Queue<String> inputQueue = new LinkedList<>(request.inputs());
     InputHandler inputHandler = new InputQueue(inputQueue);
 
     try {
-      runner.execute(stream, request.getVersion(), testOutput, errorOutput, inputHandler);
+      runner.execute(stream, request.version(), testOutput, errorOutput, inputHandler);
 
-      boolean success = testOutput.getListString().equals(request.getOutputs());
+      boolean success = testOutput.getListString().equals(request.outputs());
 
       return FullResponse.create("Test ran successfully", "executedTest",
-              new TestResponseDto(request.getSnippetId(), request.getTestId(), success ? TestState.PASSED : TestState.FAILED), HttpStatus.OK);
+              new TestResponseDto(request.snippetId(), request.testId(), success ? TestState.PASSED : TestState.FAILED), HttpStatus.OK);
     }
     catch (Exception e) {
       return FullResponse.create("Something went wrong when executing the tests", "executedTest", null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -186,33 +185,33 @@ public class ParserService {
     return output;
   }
 
-  public ResponseEntity<ResponseDto<ValidateResultDto>> validate(Long snippetId, ProcessingRequestDto request) {
-    String language = request.getLanguage().toLowerCase();
-    String version = request.getVersion();
+  public ResponseEntity<ResponseDto<ValidationState>> validate(ProcessingRequestDto request) {
+    String language = request.language().toLowerCase();
+    String version = request.version();
 
     validateLanguage(language, version);
 
-    Optional<String> snippet = snippetService.getSnippet(snippetId);
+    String content = request.content();
 
-    if (snippet.isEmpty()) {
+    if (content.isEmpty()) {
       return FullResponse.create("Snippet not found", "validationResult", null, HttpStatus.NOT_FOUND);
     }
 
     Runner runner = new Runner();
-    InputStream stream = new ByteArrayInputStream(snippet.get().getBytes());
+    InputStream stream = new ByteArrayInputStream(content.getBytes());
     ValidationState state;
     String report;
 
     try {
       runner.validate(stream, version);
       state = ValidationState.VALID;
-      report = "Validation successful";
+      report = "successfully";
     } catch (Exception e) {
       state = ValidationState.INVALID;
       report = e.getMessage();
     }
 
-    return FullResponse.create("Validation executed", "validationResult", new ValidateResultDto(report, state, language, version), HttpStatus.OK);
+    return FullResponse.create("Validation executed " + report, "validationResult", state, HttpStatus.OK);
   }
 }
 
