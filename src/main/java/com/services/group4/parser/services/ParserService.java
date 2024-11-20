@@ -169,10 +169,10 @@ public class ParserService {
 
     try {
       OutputReport report = lint(snippet.get(), version, rules);
-      return FullResponse.create("Linting executed successfully", "lintResult", new LintingResultDto(report.getFullReport().getReports(), language, version, rules), HttpStatus.OK);
+      return FullResponse.create("Linting executed successfully", "lintResult", new LintingResultDto(snippetId, report.getFullReport().getReports(), language, version, rules), HttpStatus.OK);
     }
     catch (Exception e) {
-      return FullResponse.create("Linting failed", "lintResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create("Linting failed", "lintResult", new LintingResultDto(snippetId, List.of(), language, version, rules), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

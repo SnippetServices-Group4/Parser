@@ -12,6 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 public class LintingResultDto {
+    @NotNull(message = "The snippet id is required")
+    private Long snippetId;
 
     @NotNull(message = "The report is required")
     private List<Report> report;
@@ -28,7 +30,8 @@ public class LintingResultDto {
 
     public LintingResultDto() {}
 
-    public LintingResultDto(List<Report>  report, String language, String version, String rulesUsed) {
+    public LintingResultDto(Long snippetId, List<Report> report, String language, String version, String rulesUsed) {
+        this.snippetId = snippetId;
         this.report = report;
         this.language = language;
         this.version = version;
