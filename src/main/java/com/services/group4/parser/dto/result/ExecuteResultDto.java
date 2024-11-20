@@ -13,4 +13,7 @@ public class ExecuteResultDto {
     this.printLog = printLog;
     this.errorLog = errorLog;
   }
+
+  // This constructor is required for the test
+  public ExecuteResultDto() {}
 }

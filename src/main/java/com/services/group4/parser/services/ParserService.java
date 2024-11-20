@@ -10,12 +10,24 @@ import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.dto.request.LintingRequestDto;
 import com.services.group4.parser.dto.request.ProcessingRequestDto;
 import com.services.group4.parser.dto.request.TestRequestDto;
-import com.services.group4.parser.dto.result.*;
+import com.services.group4.parser.dto.result.ExecuteResultDto;
+import com.services.group4.parser.dto.result.FormattingResultDto;
+import com.services.group4.parser.dto.result.LintingResultDto;
+import com.services.group4.parser.dto.result.ResponseDto;
+import com.services.group4.parser.dto.result.TestResponseDto;
 import com.services.group4.parser.services.adapter.FormatConfigAdapter;
 import com.services.group4.parser.services.adapter.LintConfigAdapter;
 import com.services.group4.parser.services.utils.OutputListString;
 import input.InputHandler;
 import input.InputQueue;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Queue;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,15 +38,6 @@ import output.OutputResult;
 import output.OutputString;
 import runner.Runner;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Queue;
-
 @Service
 public class ParserService {
   List<Language> languages;
@@ -44,7 +47,7 @@ public class ParserService {
 
   @Autowired
   public ParserService(SnippetService snippetService, BucketClient bucketClient) {
-    //TODO: move to another class
+    // TODO: move to another class
     List<String> versions = List.of("1.0", "1.1");
     this.languages = List.of(new Language("printscript", versions));
     this.snippetService = snippetService;
@@ -53,24 +56,31 @@ public class ParserService {
 
   private void validateLanguage(String language, String version) {
     if (languages.stream()
-            .noneMatch(l -> l.getLangName().equals(language) && l.getVersion().contains(version))) {
+        .noneMatch(l -> l.getLangName().equals(language) && l.getVersion().contains(version))) {
       throw new NoSuchElementException("Language not supported");
     }
   }
 
-  //TODO: execute should switch on language
-  public ResponseEntity<ResponseDto<ExecuteResultDto>> execute(Long snippetId, ProcessingRequestDto request) {
+  // TODO: execute should switch on language
+  public ResponseEntity<ResponseDto<ExecuteResultDto>> execute(
+      Long snippetId, ProcessingRequestDto request) {
     String language = request.getLanguage().toLowerCase();
     String version = request.getVersion();
 
     validateLanguage(language, version);
 
     Optional<String> snippet = snippetService.getSnippet(snippetId);
-      return snippet.map(s -> getExecuteResultDto(s, version, List.of())).orElseGet(() -> FullResponse.create("Snippet not found", "executeResult", null, HttpStatus.NOT_FOUND));
+    return snippet
+        .map(s -> getExecuteResultDto(s, version, List.of()))
+        .orElseGet(
+            () ->
+                FullResponse.create(
+                    "Snippet not found", "executeResult", null, HttpStatus.NOT_FOUND));
   }
 
   @NotNull
-  private static ResponseEntity<ResponseDto<ExecuteResultDto>> getExecuteResultDto(String snippet, String version, List<String> inputs) {
+  private static ResponseEntity<ResponseDto<ExecuteResultDto>> getExecuteResultDto(
+      String snippet, String version, List<String> inputs) {
     Runner runner = new Runner();
 
     InputStream stream = new ByteArrayInputStream(snippet.getBytes());
@@ -82,10 +92,14 @@ public class ParserService {
 
     try {
       runner.execute(stream, version, printLog, errorLog, inputHandler);
-      return FullResponse.create("Snippet executed successfully", "executeResult", new ExecuteResultDto(printLog.getResult(), errorLog.getResult()), HttpStatus.OK);
-    }
-    catch (Exception e) {
-      return FullResponse.create("Snippet execution failed", "executeResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create(
+          "Snippet executed successfully",
+          "executeResult",
+          new ExecuteResultDto(printLog.getResult(), errorLog.getResult()),
+          HttpStatus.OK);
+    } catch (Exception e) {
+      return FullResponse.create(
+          "Snippet execution failed", "executeResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -110,15 +124,25 @@ public class ParserService {
 
       boolean success = testOutput.getListString().equals(request.getOutputs());
 
-      return FullResponse.create("Test ran successfully", "executedTest",
-              new TestResponseDto(request.getSnippetId(), request.getTestId(), success ? TestState.PASSED : TestState.FAILED), HttpStatus.OK);
-    }
-    catch (Exception e) {
-      return FullResponse.create("Something went wrong when executing the tests", "executedTest", null, HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create(
+          "Test ran successfully",
+          "executedTest",
+          new TestResponseDto(
+              request.getSnippetId(),
+              request.getTestId(),
+              success ? TestState.PASSED : TestState.FAILED),
+          HttpStatus.OK);
+    } catch (Exception e) {
+      return FullResponse.create(
+          "Something went wrong when executing the tests",
+          "executedTest",
+          null,
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  public ResponseEntity<ResponseDto<FormattingResultDto>> format(Long snippetId, FormattingRequestDto request) {
+  public ResponseEntity<ResponseDto<FormattingResultDto>> format(
+      Long snippetId, FormattingRequestDto request) {
     String language = request.getLanguage().toLowerCase();
     String version = request.getVersion();
 
@@ -136,10 +160,14 @@ public class ParserService {
     try {
       String output = format(snippet.get(), version, rules);
       bucketClient.saveSnippet(container, snippetId, output);
-      return FullResponse.create("Snippet formatting executed successfully", "formatResult", new FormattingResultDto(output, language, version, rules), HttpStatus.OK);
-    }
-    catch (Exception e) {
-      return FullResponse.create("Snippet formatting failed", "formatResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create(
+          "Snippet formatting executed successfully",
+          "formatResult",
+          new FormattingResultDto(output, language, version, rules),
+          HttpStatus.OK);
+    } catch (Exception e) {
+      return FullResponse.create(
+          "Snippet formatting failed", "formatResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -152,7 +180,8 @@ public class ParserService {
     return output.getResult();
   }
 
-  public ResponseEntity<ResponseDto<LintingResultDto>> lint(Long snippetId, LintingRequestDto request) {
+  public ResponseEntity<ResponseDto<LintingResultDto>> lint(
+      Long snippetId, LintingRequestDto request) {
     String language = request.getLanguage().toLowerCase();
     String version = request.getVersion();
 
@@ -161,7 +190,7 @@ public class ParserService {
     Optional<String> snippet = snippetService.getSnippet(snippetId);
 
     if (snippet.isEmpty()) {
-        return FullResponse.create("Snippet not found", "lintResult", null, HttpStatus.NOT_FOUND);
+      return FullResponse.create("Snippet not found", "lintResult", null, HttpStatus.NOT_FOUND);
     }
 
     LintConfigAdapter lintConfigAdapter = new LintConfigAdapter();
@@ -169,10 +198,14 @@ public class ParserService {
 
     try {
       OutputReport report = lint(snippet.get(), version, rules);
-      return FullResponse.create("Linting executed successfully", "lintResult", new LintingResultDto(report.getFullReport().getReports(), language, version, rules), HttpStatus.OK);
-    }
-    catch (Exception e) {
-      return FullResponse.create("Linting failed", "lintResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
+      return FullResponse.create(
+          "Linting executed successfully",
+          "lintResult",
+          new LintingResultDto(report.getFullReport().getReports(), language, version, rules),
+          HttpStatus.OK);
+    } catch (Exception e) {
+      return FullResponse.create(
+          "Linting failed", "lintResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -186,7 +219,8 @@ public class ParserService {
     return output;
   }
 
-  public ResponseEntity<ResponseDto<ValidateResultDto>> validate(Long snippetId, ProcessingRequestDto request) {
+  public ResponseEntity<ResponseDto<ValidateResultDto>> validate(
+      Long snippetId, ProcessingRequestDto request) {
     String language = request.getLanguage().toLowerCase();
     String version = request.getVersion();
 
@@ -195,7 +229,8 @@ public class ParserService {
     Optional<String> snippet = snippetService.getSnippet(snippetId);
 
     if (snippet.isEmpty()) {
-      return FullResponse.create("Snippet not found", "validationResult", null, HttpStatus.NOT_FOUND);
+      return FullResponse.create(
+          "Snippet not found", "validationResult", null, HttpStatus.NOT_FOUND);
     }
 
     Runner runner = new Runner();
@@ -212,7 +247,10 @@ public class ParserService {
       report = e.getMessage();
     }
 
-    return FullResponse.create("Validation executed", "validationResult", new ValidateResultDto(report, state, language, version), HttpStatus.OK);
+    return FullResponse.create(
+        "Validation executed",
+        "validationResult",
+        new ValidateResultDto(report, state, language, version),
+        HttpStatus.OK);
   }
 }
-
