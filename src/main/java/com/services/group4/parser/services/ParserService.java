@@ -235,6 +235,7 @@ public class ParserService {
 
     String content = request.content();
 
+    // TODO: chequear si realmente es necesario, si el content es vacío, el runner no creo q deba de lanzar una excepción
     if (content.isEmpty()) {
       return FullResponse.create("Snippet not found", "validationResult", null, HttpStatus.NOT_FOUND);
     }
