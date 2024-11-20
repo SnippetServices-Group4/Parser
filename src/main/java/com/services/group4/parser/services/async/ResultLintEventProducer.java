@@ -30,6 +30,14 @@ public class ResultLintEventProducer {
   }
 
   public void emit(String jsonMessage) {
+//    try {
+//      // Introduce a delay before publishing the message
+//      Thread.sleep(5000);
+//    } catch (InterruptedException e) {
+//      Thread.currentThread().interrupt();
+//      System.err.println("Thread was interrupted: " + e.getMessage());
+//    }
+
     ObjectRecord<String, String> result =
         StreamRecords.newRecord().ofObject(jsonMessage).withStreamKey(streamKey);
     System.out.println("MESSAGE PUBLISHED");
@@ -39,6 +47,8 @@ public class ResultLintEventProducer {
   }
 
   public void publishEvent(Long snippetId, LintStatus status, List<Report> reports) {
+    System.out.println("\nRESULT LINT EVENT PRODUCER\n\n");
+
     try {
       String reportsJson = mapper.writeValueAsString(reports);
       String message =
@@ -47,8 +57,6 @@ public class ResultLintEventProducer {
                   "snippetId", snippetId,
                   "status", status,
                   "reports", reportsJson));
-
-      System.out.println("Publishing lint result event: " + message);
 
       emit(message);
     } catch (Exception e) {
