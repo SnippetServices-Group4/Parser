@@ -201,11 +201,15 @@ public class ParserService {
       return FullResponse.create(
           "Linting executed successfully",
           "lintResult",
-          new LintingResultDto(report.getFullReport().getReports(), language, version, rules),
+          new LintingResultDto(
+              snippetId, report.getFullReport().getReports(), language, version, rules),
           HttpStatus.OK);
     } catch (Exception e) {
       return FullResponse.create(
-          "Linting failed", "lintResult", null, HttpStatus.INTERNAL_SERVER_ERROR);
+          "Linting failed",
+          "lintResult",
+          new LintingResultDto(snippetId, List.of(), language, version, rules),
+          HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
