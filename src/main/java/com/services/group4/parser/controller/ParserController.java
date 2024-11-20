@@ -60,10 +60,10 @@ public class ParserController {
     return parserService.validate(request);
   }
 
-  @PostMapping("/runTest")
+  @PostMapping("/runTest/{snippetId}")
   public ResponseEntity<ResponseDto<TestResponseDto>> testSnippet(
-      @RequestBody TestRequestDto request) {
-    return parserService.runTest(request);
+      @RequestBody TestRequestDto request, @PathVariable Long snippetId) {
+    return parserService.runTest(request, snippetId);
   }
 
   // TODO: remove this endpoint

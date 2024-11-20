@@ -78,6 +78,6 @@ public class TestDtoProvider {
     String language = "printscript";
     String version = "1.1";
 
-    return new TestRequestDto("1L", input, output, version, language, 1L);
+    return new TestRequestDto("1L", input, output, version, language);
   }
 }

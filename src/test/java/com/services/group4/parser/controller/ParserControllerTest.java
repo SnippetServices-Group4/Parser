@@ -116,12 +116,12 @@ public class ParserControllerTest {
 
   @Test
   void shouldRunTest() throws Exception {
-    when(parserService.runTest(TestDtoProvider.getTestRequestDto()))
+    when(parserService.runTest(TestDtoProvider.getTestRequestDto(), 1L))
         .thenReturn(
             new ResponseEntity<>(new ResponseDto<>("", new DataTuple<>("", null)), HttpStatus.OK));
     mockMvc
         .perform(
-            post(BASE_URL + "/runTest")
+            post(BASE_URL + "/runTest/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(TestDtoProvider.getTestRequestDto())))
         .andExpect(status().isOk());
