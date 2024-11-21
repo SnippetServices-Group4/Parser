@@ -6,7 +6,6 @@ import lombok.Generated;
 
 @Generated
 public record TestRequestDto(
-    @NotNull(message = "The testId is required") String testId,
     List<String> inputs,
     List<String> outputs,
     String version,
