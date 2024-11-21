@@ -64,7 +64,7 @@ public class FinalFormatEventConsumer extends RedisStreamConsumer<String> {
   protected @NotNull StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, String>>
       options() {
     return StreamReceiver.StreamReceiverOptions.builder()
-        .pollTimeout(Duration.ofSeconds(2))
+        .pollTimeout(Duration.ofSeconds(5))
         .targetType(String.class)
         .build();
   }
