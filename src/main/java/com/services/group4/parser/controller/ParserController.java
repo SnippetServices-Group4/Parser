@@ -1,5 +1,6 @@
 package com.services.group4.parser.controller;
 
+import com.services.group4.parser.common.TestState;
 import com.services.group4.parser.common.ValidationState;
 import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.dto.request.LintingRequestDto;
@@ -61,7 +62,7 @@ public class ParserController {
   }
 
   @PostMapping("/runTest/{snippetId}")
-  public ResponseEntity<ResponseDto<TestResponseDto>> testSnippet(
+  public ResponseEntity<ResponseDto<TestState>> testSnippet(
       @RequestBody TestRequestDto request, @PathVariable Long snippetId) {
     return parserService.runTest(request, snippetId);
   }
