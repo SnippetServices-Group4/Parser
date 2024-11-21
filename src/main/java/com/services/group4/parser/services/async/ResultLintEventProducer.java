@@ -9,42 +9,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.StreamRecords;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 import report.Report;
 
 @Component
 public class ResultLintEventProducer {
   private final String streamKey;
-  private final RedisTemplate<String, String> redis;
+  private final ReactiveRedisTemplate<String, String> redis;
   private final ObjectMapper mapper;
 
   @Autowired
   public ResultLintEventProducer(
       @Value("${stream.result.lint.key}") String streamKey,
-      @NotNull RedisTemplate<String, String> redis,
+      @NotNull ReactiveRedisTemplate<String, String> redis,
       ObjectMapper mapper) {
     this.streamKey = streamKey;
     this.redis = redis;
     this.mapper = mapper;
   }
 
-  public void emit(String jsonMessage) {
-    //    try {
-    //      // Introduce a delay before publishing the message
-    //      Thread.sleep(5000);
-    //    } catch (InterruptedException e) {
-    //      Thread.currentThread().interrupt();
-    //      System.err.println("Thread was interrupted: " + e.getMessage());
-    //    }
-
-
-    System.out.println("MESSAGE PUBLISHED");
-    System.out.println();
+  public Mono<ObjectRecord<String, String>> emit(String jsonMessage) {
     ObjectRecord<String, String> result =
-            StreamRecords.newRecord().ofObject(jsonMessage).withStreamKey(streamKey);
-    System.out.println();
-    redis.opsForStream().add(result);
+        StreamRecords.newRecord().ofObject(jsonMessage).withStreamKey(streamKey);
+
+    return redis.opsForStream().add(result).thenReturn(result);
   }
 
   public void publishEvent(Long snippetId, LintStatus status, List<Report> reports) {
@@ -59,7 +49,7 @@ public class ResultLintEventProducer {
                   "status", status,
                   "reports", reportsJson));
 
-      emit(message);
+      emit(message).block();
     } catch (Exception e) {
       System.err.println("Error serializing message: " + e.getMessage());
     }

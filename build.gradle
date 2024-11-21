@@ -106,6 +106,7 @@ dependencies {
 	implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive:+'
 	implementation 'org.jetbrains:annotations:24.0.1'
+	implementation 'io.projectreactor:reactor-core:3.5.0'
 }
 
 dependencyManagement {
