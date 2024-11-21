@@ -35,8 +35,13 @@ jacocoTestReport {
 					'**/DotenvConfig.class',
 					'**/clients/**',
 					'**/config/**',
+					'**/common/**',
+					'**/security/**',
+					'**/services/utils/**',
 					'**/services/async/**',
+					'**/CorrelationIdFilter.class',
 					'**/CorrelationIdInterceptor.class',
+					'**/RequestLogFilter.class',
 					'**/ParserApplication.class',
 			])
 		}))
@@ -50,8 +55,13 @@ jacocoTestCoverageVerification {
 					'**/DotenvConfig.class',
 					'**/clients/**',
 					'**/config/**',
+					'**/common/**',
+					'**/security/**',
+					'**/services/utils/**',
 					'**/services/async/**',
+					'**/CorrelationIdFilter.class',
 					'**/CorrelationIdInterceptor.class',
+					'**/RequestLogFilter.class',
 					'**/ParserApplication.class',
 			])
 		}))

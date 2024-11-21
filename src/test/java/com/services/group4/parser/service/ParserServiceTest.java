@@ -1,5 +1,6 @@
 package com.services.group4.parser.service;
 
+import static com.services.group4.parser.common.ValidationState.INVALID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -7,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import com.services.group4.parser.clients.BucketClient;
+import com.services.group4.parser.common.ValidationState;
 import com.services.group4.parser.dto.request.FormattingRequestDto;
 import com.services.group4.parser.dto.request.LintingRequestDto;
 import com.services.group4.parser.dto.request.ProcessingRequestDto;
@@ -121,5 +123,19 @@ public class ParserServiceTest {
     LintingResultDto result =
         Objects.requireNonNull(parserService.lint(1L, request).getBody()).data().data();
     assert !result.getReport().isEmpty();
+  }
+
+  @Test
+  public void shouldValidateSnippet() {
+    ProcessingRequestDto request = TestDtoProvider.getProcessingRequestDto();
+    ResponseEntity<ResponseDto<ValidationState>> response = parserService.validate(request);
+    assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
+  }
+
+  @Test
+  public void shouldNotValidateSnippet() {
+    ProcessingRequestDto request = TestDtoProvider.getInvalidSnippetProcessingRequestDto();
+    ResponseEntity<ResponseDto<ValidationState>> response = parserService.validate(request);
+    assertEquals(INVALID, Objects.requireNonNull(response.getBody()).data().data());
   }
 }

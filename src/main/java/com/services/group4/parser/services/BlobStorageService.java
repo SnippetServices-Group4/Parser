@@ -19,10 +19,6 @@ public class BlobStorageService {
     this.bucketClient = bucketClient;
   }
 
-  public void saveSnippet(String container, Long id, String content) {
-    bucketClient.saveSnippet(container, id, content);
-  }
-
   public Optional<String> getSnippet(String container, Long id) {
     ResponseEntity<String> response = bucketClient.getSnippet(container, id);
     if (response.hasBody()) {
