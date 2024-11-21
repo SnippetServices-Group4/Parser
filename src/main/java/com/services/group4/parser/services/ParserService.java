@@ -113,7 +113,7 @@ public class ParserService {
     }
   }
 
-  public ResponseEntity<ResponseDto<TestResponseDto>> runTest(
+  public ResponseEntity<ResponseDto<TestState>> runTest(
       TestRequestDto request, Long snippetId) {
     Optional<String> snippet = snippetService.getSnippet(snippetId);
 
@@ -138,14 +138,13 @@ public class ParserService {
 
       return FullResponse.create(
           "Test ran successfully",
-          "executedTest",
-          new TestResponseDto(
-              snippetId, request.testId(), success ? TestState.PASSED : TestState.FAILED),
+          "testState",
+          success ? TestState.PASSED : TestState.FAILED,
           HttpStatus.OK);
     } catch (Exception e) {
       return FullResponse.create(
           "Something went wrong when executing the tests",
-          "executedTest",
+          "testState",
           null,
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
