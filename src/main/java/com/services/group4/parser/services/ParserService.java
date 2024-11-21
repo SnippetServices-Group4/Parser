@@ -13,7 +13,6 @@ import com.services.group4.parser.dto.result.ExecuteResultDto;
 import com.services.group4.parser.dto.result.FormattingResultDto;
 import com.services.group4.parser.dto.result.LintingResultDto;
 import com.services.group4.parser.dto.result.ResponseDto;
-import com.services.group4.parser.dto.result.TestResponseDto;
 import com.services.group4.parser.services.adapter.FormatConfigAdapter;
 import com.services.group4.parser.services.adapter.LintConfigAdapter;
 import com.services.group4.parser.services.utils.OutputListString;
@@ -113,8 +112,7 @@ public class ParserService {
     }
   }
 
-  public ResponseEntity<ResponseDto<TestState>> runTest(
-      TestRequestDto request, Long snippetId) {
+  public ResponseEntity<ResponseDto<TestState>> runTest(TestRequestDto request, Long snippetId) {
     Optional<String> snippet = snippetService.getSnippet(snippetId);
 
     if (snippet.isEmpty()) {
@@ -258,7 +256,7 @@ public class ParserService {
     ValidationState state;
     String report;
 
-    log.info("Trying to validate snippet with id");
+    log.info("Trying to validate snippet");
     try {
       runner.validate(stream, version);
       state = ValidationState.VALID;

@@ -16,6 +16,12 @@ public class TestDtoProvider {
     return new ProcessingRequestDto(version, language, "let x : number = 5;");
   }
 
+  public static ProcessingRequestDto getInvalidSnippetProcessingRequestDto() {
+    String language = "printscript";
+    String version = "1.1";
+    return new ProcessingRequestDto(version, language, "let : string = 5;");
+  }
+
   public static LintingRequestDto getAnalyzeCamelCaseRequestDto() {
     LintRulesDto rules = getLintCamelCaseRulesDto();
 
@@ -78,6 +84,6 @@ public class TestDtoProvider {
     String language = "printscript";
     String version = "1.1";
 
-    return new TestRequestDto("1L", input, output, version, language);
+    return new TestRequestDto(input, output, version, language);
   }
 }
